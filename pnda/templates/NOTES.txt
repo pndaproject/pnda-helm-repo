@@ -1,0 +1,19 @@
+This chart add  several kubernetes object to deploy PNDA platform on kubernetes:
+
+##########################################
+### PNDA RBAC
+it deploys a pnda serviceaccount and role to allow schedule spark jobs directly into kubernetes.
+
+When a spark-job is submited, the configuration of spark-submit should be:
+spark-submit
+--master k8s://$(kubectl cluster-info | awk 'NR==1 {print $6}')
+--deploy-mode [cluster or client]
+--conf spark.kubernetes.container.image=[spark image. e.g gradiant/spark:2.4.0]
+--conf spark.kubernetes.namespace={{ .Release.Namespace }}
+--conf spark.kubernetes.authenticate.driver.serviceAccountName={{.Values.serviceAccountName}}
+
+Other important options are:
+--conf spark.kubernetes.executor.request.cores=0.2
+--executor-memory 500M
+--num-executors 3
+##########################################

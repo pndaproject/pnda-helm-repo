@@ -1,0 +1,18 @@
+#Headless service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "opentsdb.fullname" . }}
+  labels:
+    app: {{ include "opentsdb.name" . }}
+    chart: {{ include "opentsdb.chart" . }}
+    release: {{ .Release.Name }}
+spec:
+  ports:
+  - name: opentsdb
+    port: 4242
+    protocol: TCP
+  clusterIP: None
+  selector:
+    app: {{ include "opentsdb.name" . }}
+    release: {{ .Release.Name }}

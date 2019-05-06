@@ -1,0 +1,77 @@
+### General PNDA Values
+serviceAccountName: pnda
+roleName: pnda-role
+roleBindingName: pnda
+
+hbase:
+  enable: true
+hdfs:
+  enabled: true
+  # The base hadoop image to use for all components.
+  # See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/master/image
+  image:
+    repository: gradiant/hadoop-base
+    tag: 2.7.7
+    pullPolicy: IfNotPresent
+  # The version of the hadoop libraries being used in the image.
+  hadoopVersion: 2.7.7
+  conf:
+    hdfs-site:
+      #hdfs property needed if hbase is deploy with hdfs
+      dfs.datanode.max.transfer.threads: 4096
+
+grafana:
+  enable: true
+  sidecar:
+    datasources:
+      enabled: true
+      # label that the configmaps with datasources are marked with
+      label: grafana_datasource
+
+
+## ------------------------------------------------------
+## Jupyterhub
+## ------------------------------------------------------
+jupyterhub:
+  enabled: true
+  singleuser:
+    serviceAccountName: pnda
+    storage:
+      dynamic:
+        storageClass: standard
+  hub:
+    db:
+      pvc:
+        storageClassName: standard
+
+## ------------------------------------------------------
+## Confluent Platform
+## ------------------------------------------------------
+# To enable/disable cp services
+cp-schema-registry:
+  enabled: false
+cp-kafka-rest:
+  enabled: false
+cp-kafka-connect:
+  enabled: false
+cp-ksql-server:
+  enabled: false
+cp-zookeeper:
+  enabled: true
+cp-kafka:
+  enabled: true
+# Since cp-platform define all cp-services as subcharts we have to configure
+# them with the parent chart name as root
+# (we set 'confluent-platform' as an alias name in requirements.yaml)
+confluent-platform:
+  cp-zookeeper:
+    persistence:
+      dataDirStorageClass: "standard"
+  cp-kafka:
+    persistence:
+      storageClass: "standard"
+## ------------------------------------------------------
+## Spark standalone
+## ------------------------------------------------------
+spark-standalone:
+  enabled: false

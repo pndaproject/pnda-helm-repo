@@ -1,0 +1,39 @@
+# Default values for hbase
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# The base hadoop image to use for all components.
+# See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/master/image
+image:
+  repository: gradiant/hbase-base
+  tag: 2.0.1
+  pullPolicy: Always
+
+# The version of the hadoop libraries being used in the image.
+hbaseVersion: 2.0.1
+
+# Select antiAffinity as either hard or soft, default is soft
+antiAffinity: "soft"
+
+conf:
+  hbase-site: {}
+    #hbase.zookeeper.quorum: default is {{.Release.Name}}-cp-zookeeper:2181
+
+hbase:
+  master:
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"
+  regionServer:
+    replicas: 1
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"

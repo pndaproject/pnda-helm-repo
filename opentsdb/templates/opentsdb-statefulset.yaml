@@ -1,0 +1,76 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ include "opentsdb.fullname" . }}
+  labels:
+    app: {{ include "opentsdb.name" . }}
+    chart: {{ include "opentsdb.chart" . }}
+    release: {{ .Release.Name }}
+spec:
+  serviceName: {{ include "opentsdb.fullname" . }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ include "opentsdb.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      affinity:
+        podAntiAffinity:
+        {{- if eq .Values.antiAffinity "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app:  {{ include "opentsdb.name" . }}
+                release: {{ .Release.Name | quote }}
+        {{- else if eq .Values.antiAffinity "soft" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 5
+            podAffinityTerm:
+              topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app:  {{ include "opentsdb.name" . }}
+                  release: {{ .Release.Name | quote }}
+        {{- end }}
+      terminationGracePeriodSeconds: 0
+      initContainers:
+      - name: opentsdb-create-hbase-tables
+        image: "{{ .Values.hbaseImage.repository }}:{{ .Values.hbaseImage.tag }}"
+        command: ['bash', '/tmp/init/create_hbase_tables.sh']
+        volumeMounts:
+        - name: opentsdb-init
+          mountPath: /tmp/init
+        - name: hbase-config
+          mountPath: /tmp/hbase-config
+      containers:
+      - name: opentsdb
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        env:
+          - name: ZKQUORUM
+            value: {{ .Values.conf.zkquorum | default (printf "%s-cp-zookeeper:2181" ( .Release.Name )) }}
+          - name: TSDB_PORT
+            value: "4242"
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 4242
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 4242
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+      volumes:
+      - name: opentsdb-init
+        configMap:
+          name: {{ include "opentsdb.fullname" . }}-init
+      - name: hbase-config
+        configMap:
+          name: {{ .Values.hbaseConfigMapName | default (printf "%s-hbase" .Release.Name ) }}

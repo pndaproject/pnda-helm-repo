@@ -1,0 +1,51 @@
+# The base hadoop image to use for all components.
+# See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/master/image
+image:
+  repository: gradiant/hadoop-base
+  tag: 2.7.7
+  pullPolicy: IfNotPresent
+
+# The version of the hadoop libraries being used in the image.
+hadoopVersion: 2.7.7
+
+# Select antiAffinity as either hard or soft, default is soft
+antiAffinity: "soft"
+
+conf:
+  core-site:
+  hdfs-site:
+    dfs.replication: 3
+
+hdfs:
+  nameNode:
+    pdbMinAvailable: 1
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"
+  dataNode:
+    replicas: 1
+    pdbMinAvailable: 1
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"
+
+persistence:
+  nameNode:
+    enabled: false
+    storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 50Gi
+
+  dataNode:
+    enabled: false
+    storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 200Gi

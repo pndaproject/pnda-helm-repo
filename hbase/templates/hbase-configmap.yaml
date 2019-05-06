@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-hbase
+  labels:
+    app: {{ include "hbase.name" . }}
+    chart: {{ include "hbase.chart" . }}
+    release: {{ .Release.Name }}
+data:
+  bootstrap.sh: |
+    #!/bin/bash
+
+    : ${HBASE_PREFIX:=/usr/local/hbase}
+
+    . $HBASE_PREFIX/conf/hbase-env.sh
+
+    # Directory to find config artifacts
+    CONFIG_DIR="/tmp/hbase-config"
+
+    # Copy config files from volume mount
+
+    for f in hbase-site.xml ; do
+      if [[ -e ${CONFIG_DIR}/$f ]]; then
+        cp ${CONFIG_DIR}/$f $HBASE_PREFIX/conf/$f
+      else
+        echo "ERROR: Could not find $f in $CONFIG_DIR"
+        exit 1
+      fi
+    done
+
+    if [[ "${HOSTNAME}" =~ "master" ]]; then
+      $HBASE_PREFIX/bin/hbase-daemon.sh start master
+      $HBASE_PREFIX/bin/hbase-daemon.sh start thrift
+    fi
+    if [[ "${HOSTNAME}" =~ "region" ]]; then
+      #  wait up to 30 seconds for masternode
+      (while [[ $count -lt 15 && -z `curl -sf http://{{ include "hbase.fullname" . }}-master:16010` ]]; do ((count=count+1)) ; echo "Waiting for {{ include "hbase.fullname" . }}-master" ; sleep 2; done && [[ $count -lt 15 ]])
+      [[ $? -ne 0 ]] && echo "Timeout waiting for hdfs-nn, exiting." && exit 1
+      $HBASE_PREFIX/bin/hbase-daemon.sh start regionserver
+    fi
+    if [[ $1 == "-d" ]]; then
+      until find ${HBASE_PREFIX}/logs -mmin -1 | egrep -q '.*'; echo "`date`: Waiting for logs..." ; do sleep 2 ; done
+      tail -F ${HBASE_PREFIX}/logs/* &
+      while true; do sleep 1000; done
+    fi
+
+    if [[ $1 == "-bash" ]]; then
+      /bin/bash
+    fi
+  hbase-site.xml: |
+    <?xml version="1.0"?>
+    <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+    <configuration>
+      <property>
+        <name>hbase.cluster.distributed</name>
+        <value>true</value>
+      </property>
+      <property>
+        <name>hbase.master</name>
+        <value>>{{ include "hbase.fullname" . }}-master:16000</value>
+      </property>
+      {{- if not (index .Values.conf "hbase-site" "hbase.zookeeper.quorum")  }}
+      <property>
+        <name>hbase.zookeeper.quorum</name>
+        <value>{{.Release.Name}}-cp-zookeeper:2181</value>
+      </property>
+      {{- end }}
+      {{- if not (index .Values.conf "hbase-site" "hbase.rootdir")  }}
+      <property>
+        <name>hbase.rootdir</name>
+        <value>hdfs://{{.Release.Name}}-hdfs-namenode:9000/hbase</value>
+      </property>
+      {{- end }}
+
+      {{- if index .Values.conf "hbase-site" }}
+      {{- range $key, $value := index .Values.conf "hbase-site" }}
+      <property><name>{{ $key }}</name><value>{{ $value }}</value></property>
+      {{- end }}
+      {{- end }}
+    </configuration>

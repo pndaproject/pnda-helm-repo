@@ -1,0 +1,25 @@
+# Patterns to ignore when building packages.
+.git/
+.gitignore
+
+# Common backup files
+*.swp
+*.bak
+*.tmp
+*~
+
+# local chart folder
+local-charts
+
+# Various IDEs
+.project
+.idea/
+*.tmproj
+ Images and archives
+*.png
+/*.tgz
+
+
+scripts/
+#screenshots/
+docs/index.html
