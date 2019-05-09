@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   serviceName: {{ include "opentsdb.fullname" . }}
-  replicas: 1
+  replicas: {{ default 1 .Values.daemons }}
   template:
     metadata:
       labels:
@@ -48,11 +48,6 @@ spec:
       - name: opentsdb
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
-        env:
-          - name: ZKQUORUM
-            value: {{ .Values.conf.zkquorum | default (printf "%s-cp-zookeeper:2181" ( .Release.Name )) }}
-          - name: TSDB_PORT
-            value: "4242"
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         readinessProbe:
@@ -67,10 +62,16 @@ spec:
             port: 4242
           initialDelaySeconds: 10
           timeoutSeconds: 2
+        volumeMounts:
+          - name: opentsdb-config
+            mountPath: /etc/opentsdb
       volumes:
       - name: opentsdb-init
         configMap:
           name: {{ include "opentsdb.fullname" . }}-init
+      - name: opentsdb-config
+        configMap:
+          name: {{ include "opentsdb.fullname" . }}-config
       - name: hbase-config
         configMap:
           name: {{ .Values.hbaseConfigMapName | default (printf "%s-hbase" .Release.Name ) }}

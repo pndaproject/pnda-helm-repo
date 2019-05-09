@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "opentsdb.fullname" . }}-config
+  labels:
+    app: {{ include "opentsdb.name" . }}
+    chart: {{ include "opentsdb.chart" . }}
+    release: {{ .Release.Name }}
+data:
+  opentsdb.conf: |
+    tsd.network.port={{ .Values.port }}
+    {{- if not (index .Values.conf "tsd.storage.hbase.zk_quorum")  }}
+    tsd.storage.hbase.zk_quorum = {{ .Release.Name }}-cp-zookeeper:2181
+    {{- end }}
+    {{- range $key, $value := .Values.conf }}
+    {{- if $value }}
+    {{ $key }} = {{ $value }}
+    {{- end}}
+    {{- end }}

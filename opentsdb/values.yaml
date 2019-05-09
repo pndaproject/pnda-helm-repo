@@ -19,9 +19,19 @@ hbaseConfigMapName: null
 # Select antiAffinity as either hard or soft, default is soft
 antiAffinity: "soft"
 
+# Initial number of tsd daemons
+daemons: 1
+port: 4242
+nodePort:
+  enabled: false
+  externalPort: 31042
+
 conf:
   #zqquorum: default is "{{.Release.Name}}-cp-zookeeper:2181"
-  zqquorum:
+  tsd.storage.hbase.zk_quorum:
+  tsd.core.auto_create_metrics: true
+  tsd.core.auto_create_tagks: true
+  tsd.core.auto_create_tagvs: true
 
 resources:
   requests:
