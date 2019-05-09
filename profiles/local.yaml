@@ -53,6 +53,9 @@ confluent-platform:
     servers: 1
   cp-kafka:
     brokers: 1
+    configurationOverrides:
+      offsets.topic.replication.factor: "1"
+      default.replication.factor: "1"
 ################################
 # Hadoop Platform
 ################################
