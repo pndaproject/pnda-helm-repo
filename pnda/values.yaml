@@ -43,6 +43,10 @@ jupyterhub:
     db:
       pvc:
         storageClassName: standard
+  ingress:
+    enabled: false
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 64m
 
 ## ------------------------------------------------------
 ## Confluent Platform
