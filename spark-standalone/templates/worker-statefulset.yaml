@@ -35,6 +35,7 @@ spec:
           value: {{ $value | quote }}
         {{- end }}
         args:
+        - standalone
         - worker
         - spark://{{ template "spark.fullname" . }}:7077
         - --webui-port {{ .Values.worker.ui_port }}
@@ -45,4 +46,3 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
-

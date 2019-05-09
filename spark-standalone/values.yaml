@@ -12,7 +12,7 @@ workers: 1
 ## Image Info
 ## ref: https://hub.docker.com/r/gradiant/spark
 image: gradiant/spark
-imageTag: 2.4.0
+imageTag: 2.4.0-python
 
 # Set this to set ui access through ingress controller @ http://releaseName-chartName.ingressDomain
 ingressDomain: local
@@ -30,10 +30,10 @@ master:
 
   ## Additional env variables
   customEnv: {}
-  
+
   ## Kafka JVM Heap Option
   heapOptions: "-Xms1G -Xmx1G"
-  
+
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
@@ -45,15 +45,14 @@ master:
     # requests:
     #  cpu: 100m
     #  memory: 128Mi
-  
+
   ## Custom pod annotations
   podAnnotations: {}
-  
+
   ## Node labels for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   nodeSelector: {}
-  
+
   ## Taints to tolerate on node assignment:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: {}
-

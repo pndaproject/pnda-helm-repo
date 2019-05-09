@@ -56,13 +56,13 @@ spec:
           value: {{ $value | quote }}
         {{- end }}
         args:
+        - standalone
         - master
         - --port {{ .Values.master.port }}
-        - --webui-port {{ .Values.master.ui_port }}   
+        - --webui-port {{ .Values.master.ui_port }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
-
