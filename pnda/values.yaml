@@ -66,10 +66,30 @@ cp-kafka:
 confluent-platform:
   cp-zookeeper:
     persistence:
+      enabled: true
+      dataLogDirStorageClass: "standard"
       dataDirStorageClass: "standard"
   cp-kafka:
+    image: confluentinc/cp-kafka
+    imageTag: 5.0.1
     persistence:
+      enable: true
       storageClass: "standard"
+kafka-manager:
+  enabled: true
+  image:
+    repository: gradiant/kafka-manager
+    tag: 2.0.0.2
+    pullPolicy: Always
+  clusters:
+   - name: "PNDA-Kafka"
+     #It will default to the Kafka-manager zookeeper hosts if not specified
+     # zkHosts: ""
+     kafkaVersion: "2.0.0"
+     jmxEnabled: "true"
+     tuning: {}
+
+
 ## ------------------------------------------------------
 ## Spark standalone
 ## ------------------------------------------------------
