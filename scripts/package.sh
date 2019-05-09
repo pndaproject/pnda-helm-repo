@@ -1,11 +1,15 @@
 #!/bin/bash
 
-rm -rf charts/*
+rm -f docs/*.tgz
+rm -f docs/*.yaml
 
-helm package -d charts hdfs
-helm package -d charts hbase
-helm package -d charts spark-standalone
-helm package -d charts opentsdb
-helm dep update pnda
-helm package -d charts pnda
-helm repo index charts --url https://gradiant.github.io/pnda-charts
+for CHART in hdfs hbase opentsdb spark-standalone pnda
+do
+
+helm dep update $CHART
+helm package -d docs $CHART
+rm -rf $CHART/charts
+
+done
+
+helm repo index docs/

@@ -20,21 +20,21 @@ Tested with:
 
 ## Getting Started
 
+Adding pnda helm repo:
+
+```
+helm repo add pndaproject https://pndaproject.github.io/pnda-helm-repo/
+helm repo update
+```
+
 You need [helm client](https://helm.sh/) configured to manage your kubernetes cluster.
 
-In the root of the project get the pnda chart dependencies:
+Then you can deploy pnda by providing a profile (e.g. pico profile in this github repo):
 
 ```
-helm dep update pnda
+helm install pndaproject/pnda --name pnda -f profile/pico.yaml
 ```
 
-This will download the all dependent chart .tgz in pnda/charts.
-
-Then you can deploy pnda by providing a profile (e.g. pico profile):
-
-```
-helm install pnda --name pnda -f profile/pico.yaml
-```
 
 ## Configuration
 
@@ -46,14 +46,14 @@ Available configuration names and default values are listed in the values.yaml f
 - openstsdb [values.yaml](opentsdb/values.yaml).
 - jupyterhub [values.yaml](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/blob/0.8.2/jupyterhub/values.yaml).
 - cp-platform [values.yaml](https://github.com/confluentinc/cp-helm-charts/blob/master/values.yaml).
-  - cp-zookeeper [values.yaml](https://github.com/confluentinc/cp-helm-charts/blob/master/charts/cp-zookeeper/values.yaml).
-  - cp-kafka [values.yaml](https://github.com/confluentinc/cp-helm-charts/blob/master/charts/cp-kafka/values.yaml).
+- cp-zookeeper [values.yaml](https://github.com/confluentinc/cp-helm-charts/blob/master/charts/cp-zookeeper/values.yaml).
+- cp-kafka [values.yaml](https://github.com/confluentinc/cp-helm-charts/blob/master/charts/cp-kafka/values.yaml).
 
 This values can be overwritten with a user-provided profile file.
 Example profiles are included in the profile folder:
 
 - [profile/local.yml](profile/local.yml): profile to deploy pnda in a single computer for development purposes.
-- [profile/pico.yml](profile/local.yml): profile to deploy pnda in a cluster with minimum resources.
+- [profile/pico.yml](profile/pico.yml): profile to deploy pnda in a cluster with minimum resources.
 
 ## Tests
 
