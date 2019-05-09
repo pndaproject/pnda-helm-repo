@@ -18,6 +18,7 @@ conf:
 
 hdfs:
   nameNode:
+    port: 8020
     pdbMinAvailable: 1
     resources:
       requests:

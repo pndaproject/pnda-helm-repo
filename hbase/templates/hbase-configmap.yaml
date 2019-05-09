@@ -68,7 +68,7 @@ data:
       {{- if not (index .Values.conf "hbase-site" "hbase.rootdir")  }}
       <property>
         <name>hbase.rootdir</name>
-        <value>hdfs://{{.Release.Name}}-hdfs-namenode:9000/hbase</value>
+        <value>{{ include "hbase.hdfsURL" . }}/hbase</value>
       </property>
       {{- end }}
 

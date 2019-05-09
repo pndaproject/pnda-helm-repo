@@ -21,3 +21,14 @@ Create chart name and version as used by the chart label.
 {{- define "hbase.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create the hdfsURL.
+*/}}
+{{- define "hbase.hdfsURL" -}}
+{{- if .Values.hdfsURL -}}
+    {{- .Values.hdfsURL -}}
+{{- else -}}
+  {{- printf "hdfs://%s-hdfs-namenode:8020" .Release.Name }}
+{{- end -}}
+{{- end -}}

@@ -10,9 +10,6 @@ metadata:
     component: datanode
 spec:
   ports:
-  - name: dfs
-    port: 9000
-    protocol: TCP
   - name: webhdfs
     port: 50075
   clusterIP: None

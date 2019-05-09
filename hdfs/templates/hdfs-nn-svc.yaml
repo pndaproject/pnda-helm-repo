@@ -11,7 +11,7 @@ metadata:
 spec:
   ports:
   - name: dfs
-    port: 9000
+    port: {{ .Values.hdfs.nameNode.port }}
     protocol: TCP
   - name: webhdfs
     port: 50070
