@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: console-frontend
+  namespace: pnda
+spec:
+  selector:
+    app: console-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: console-frontend
+  namespace: pnda
+  labels:
+    app: console-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: console-frontend
+  template:
+    metadata:
+      labels:
+        app: console-frontend
+    spec:
+      containers:
+        - name: console-frontend
+          image: containers.cisco.com/donaldh/console-frontend:0.1.2
+          env:
+            - name: REDIS
+              value: redis://redis-master
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html/conf/PNDA.json
+              subPath: PNDA.json
+              name: console-frontend-config
+            - mountPath: /etc/nginx/conf.d
+              name: console-nginx-config
+      volumes:
+        - name: console-frontend-config
+          configMap:
+            name: console-frontend-config
+        - name: console-nginx-config
+          configMap:
+            name: console-nginx-config
+#  imagePullSecrets:
+#    - name: donaldh-pull-secret
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: console-frontend-config
+  namespace: pnda
+data:
+  PNDA.json: |-
+{{ .Files.Get "resources/config/PNDA.json" | indent 4 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: console-nginx-config
+  namespace: pnda
+data:
+  PNDA-nginx.conf: |-
+{{ .Files.Get "resources/config/PNDA-nginx.conf" | indent 4 }}

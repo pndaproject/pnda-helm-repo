@@ -1,0 +1,48 @@
+{
+  "hadoop_distro": "HDP",
+  "clustername": "pnda",
+  "edge_node": "{{ edge_node }}",
+  "user_interfaces": [
+    {
+      "name": "Hadoop Cluster Manager",
+      "link": "{{ hadoop_manager_link }}"
+    },
+    {
+      "name": "Kafka Manager",
+      "link": "{{ kafka_manager_link }}"
+    },
+    {
+      "name": "Grafana",
+      "link": "{{ grafana_link }}"
+    },
+    {
+      "name": "PNDA logserver",
+      "link": "{{ kibana_link }}"
+    },
+    {
+      "name": "Jupyter",
+      "link": "{{ jupyter_link }}"
+    },
+    {
+      "name": "Flink",
+      "link": "{{ flink_link }}"
+    },
+    {
+      "name": "YARN Resource Manager",
+      "link": "{{ yarn_link }}"
+    }
+  ],
+  "machine_interfaces" : {
+      "HTTPFS" :  "{{ httpfs_link }}"
+  },
+  "frontend": {
+    "version": "{{ frontend_version }}"
+  },
+  "backend": {
+    "data-manager": {
+      "version": "{{data_manager_version}}",
+      "host": "console-backend-manager", "port": "3123"
+    }
+  },
+  "login_mode": "PAM"
+}

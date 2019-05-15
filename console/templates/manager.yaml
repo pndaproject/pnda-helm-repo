@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: console-backend-manager
+  namespace: pnda
+spec:
+  selector:
+    app: console-backend-manager
+  ports:
+    - port: 3123
+      targetPort: 3123
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: console-backend-manager
+  namespace: pnda
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: console-backend-manager
+  template:
+    metadata:
+      labels:
+        app: console-backend-manager
+    spec:
+      containers:
+        - name: console-backend-manager
+          image: containers.cisco.com/donaldh/console-backend-data-manager:0.1.1
+          env:
+            - name: REDIS
+              value: redis://redis-master
+          command:
+            - "node"
+            - "app.js"
+
+#  imagePullSecrets:
+#    - name: donaldh-pull-secret
