@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: console-backend-logger
+  namespace: pnda
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: console-backend-logger
+  template:
+    metadata:
+      labels:
+        app: console-backend-logger
+    spec:
+      containers:
+        - name: console-backend-logger
+          image: containers.cisco.com/donaldh/console-backend-data-logger:0.1
+          env:
+            - name: REDIS
+              value: redis://redis-master
+          command:
+            - "node"
+            - "app.js"
+
+#  imagePullSecrets:
+#    - name: donaldh-pull-secret
