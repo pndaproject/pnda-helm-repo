@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: deployment-manager
+  namespace: pnda
+spec:
+  selector:
+    app: deployment-manager
+  ports:
+    - port: 5000
+      targetPort: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-manager
+  namespace: pnda
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deployment-manager
+  template:
+    metadata:
+      labels:
+        app: deployment-manager
+    spec:
+      containers:
+        - name: deployment-manager
+          image: containers.cisco.com/donaldh/deployment-manager:0.1.1
+          env:
+            - name: REDIS
+              value: redis://redis-master
+          command:
+            - "python"
+            - "app.py"
+          volumeMounts:
+            - mountPath: /deployment-manager/dm-config.json
+              subPath: dm-config.json
+              name: deployment-manager-config
+      volumes:
+        - name: deployment-manager-config
+          configMap:
+            name: deployment-manager-config
+#  imagePullSecrets:
+#    - name: donaldh-pull-secret
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: deployment-manager-config
+  namespace: pnda
+data:
+  dm-config.json: |-
+{{ .Files.Get "resources/config/dm-config.json" | indent 4 }}
