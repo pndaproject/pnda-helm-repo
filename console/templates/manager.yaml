@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: console-backend-manager
-          image: containers.cisco.com/donaldh/console-backend-data-manager:0.1.1
+          image: containers.cisco.com/donaldh/console-backend-data-manager:0.1.2
           env:
             - name: REDIS
               value: redis://redis-master
