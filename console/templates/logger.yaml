@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: console-backend-logger
+  namespace: pnda
+spec:
+  selector:
+    app: console-backend-logger
+  ports:
+    - port: 3001
+      targetPort: 3001
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
