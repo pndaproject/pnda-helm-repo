@@ -1,5 +1,5 @@
 {
-  "hadoop_distro": "HDP",
+  "hadoop_distro": "none",
   "clustername": "pnda",
   "edge_node": "{{ edge_node }}",
   "user_interfaces": [
