@@ -34,7 +34,7 @@
         "environment_sync_interval": 120,
         "package_callback": "http://console-backend-logger:3001/packages",
         "application_callback": "http://console-backend-logger:3001/applications",
-        "package_repository": "http://repository-manager:8888",
+        "package_repository": "http://package-repository:8888",
         "oozie_spark_version": "2"
     }
 }
