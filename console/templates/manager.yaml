@@ -34,6 +34,23 @@ spec:
           command:
             - "node"
             - "app.js"
-
+          volumeMounts:
+            - mountPath: /console-backend-data-manager/conf/config.js
+              subPath: config.js
+              name: data-manager-config
+      volumes:
+        - name: data-manager-config
+          configMap:
+            name: data-manager-config
 #  imagePullSecrets:
 #    - name: donaldh-pull-secret
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-manager-config
+  namespace: pnda
+data:
+  config.js: |-
+{{ .Files.Get "resources/config/data-manager-config.js" | indent 4 }}
