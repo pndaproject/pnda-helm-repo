@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-service
+  namespace: pnda
+spec:
+  selector:
+    app: data-service
+  ports:
+    - port: 7000
+      name: a
+      targetPort: 7000
+    - port: 7001
+      name: b
+      targetPort: 7001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-service
+  namespace: pnda
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-service
+  template:
+    metadata:
+      labels:
+        app: data-service
+    spec:
+      containers:
+        - name: data-service
+          image: containers.cisco.com/donaldh/data-service:0.1.1
+          command:
+            - "python"
+            - "apiserver.py"
+          volumeMounts:
+            - mountPath: /data-service/server.conf
+              subPath: server.conf
+              name: data-service-config
+      volumes:
+        - name: data-service-config
+          configMap:
+            name: data-service-config
+#  imagePullSecrets:
+#    - name: donaldh-pull-secret
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-service-config
+  namespace: pnda
+data:
+  server.conf: |-
+{{ .Files.Get "resources/config/server.conf" | indent 4 }}
