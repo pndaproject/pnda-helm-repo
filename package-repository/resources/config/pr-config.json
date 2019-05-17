@@ -1,0 +1,12 @@
+{
+    "FsRepository": {
+        "location": {
+            "path": "/packages"
+        }
+    },
+    "config": {
+        "log_level":"DEBUG",
+        "package_callback": "http://console-backend-logger:3001/packages"
+    }
+
+}

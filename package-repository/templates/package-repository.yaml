@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: package-repository
+  namespace: pnda
+spec:
+  selector:
+    app: package-repository
+  ports:
+    - port: 8888
+      targetPort: 8888
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: package-repository
+  namespace: pnda
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: package-repository
+  template:
+    metadata:
+      labels:
+        app: package-repository
+    spec:
+      containers:
+        - name: package-repository
+          image: containers.cisco.com/donaldh/package-repository:0.1
+          command:
+            - "python"
+            - "package_repository_rest_server.py"
+          volumeMounts:
+            - mountPath: /package-repository/pr-config.json
+              subPath: pr-config.json
+              name: package-repository-config
+            - mountPath: /packages
+              name: packages-volume
+      volumes:
+        - name: package-repository-config
+          configMap:
+            name: package-repository-config
+        - name: packages-volume
+          persistentVolumeClaim:
+            claimName: package-repository
+#  imagePullSecrets:
+#    - name: donaldh-pull-secret
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: package-repository-config
+  namespace: pnda
+data:
+  pr-config.json: |-
+{{ .Files.Get "resources/config/pr-config.json" | indent 4 }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: package-repository
+  name: package-repository
+  namespace: pnda
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: rook-ceph-block
