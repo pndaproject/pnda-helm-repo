@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: console-frontend
-          image: containers.cisco.com/donaldh/console-frontend:0.1.2
+          image: containers.cisco.com/donaldh/console-frontend:0.1.3
           env:
             - name: REDIS
               value: redis://redis-master
