@@ -1,0 +1,35 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "platform-testing.fullname" . }}-kafka
+  labels:
+    app: {{ template "platform-testing.name" . }}
+    chart: {{ template "platform-testing.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "platform-testing.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "platform-testing.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "python"
+            - "monitor.py"
+            - "--plugin"
+            - "kafka"
+            - "--display"
+            - "--postjson"
+            - "http://console-backend-logger:3001/metrics"
+            - "--extra"
+            - "--brokerlist pnda-cp-kafka:9092 --zkconnect pnda-cp-zookeeper:2181 --prod2cons"
