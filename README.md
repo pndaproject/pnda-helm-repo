@@ -20,6 +20,13 @@ Tested with:
 
 ## Getting Started
 
+Add 3rd party repos:
+```
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+helm repo add jupyterhub https://jupyterhub.github.io/helm-chart/
+helm repo add confluent https://confluentinc.github.io/cp-helm-charts/
+```
+
 Adding pnda helm repo:
 
 ```
