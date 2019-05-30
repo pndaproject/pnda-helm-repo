@@ -13,7 +13,7 @@
     },
     {
       "name": "Grafana",
-      "link": "{{ grafana_link }}"
+      "link": "http://grafana.pnda.io/"
     },
     {
       "name": "PNDA logserver",
@@ -21,26 +21,18 @@
     },
     {
       "name": "Jupyter",
-      "link": "{{ jupyter_link }}"
-    },
-    {
-      "name": "Flink",
-      "link": "{{ flink_link }}"
-    },
-    {
-      "name": "YARN Resource Manager",
-      "link": "{{ yarn_link }}"
+      "link": "http://notebooks.pnda.io/"
     }
   ],
   "machine_interfaces" : {
       "HTTPFS" :  "{{ httpfs_link }}"
   },
   "frontend": {
-    "version": "{{ frontend_version }}"
+    "version": "develop"
   },
   "backend": {
     "data-manager": {
-      "version": "{{data_manager_version}}",
+      "version": "develop",
       "host": "console-backend-manager", "port": "3123"
     }
   },
