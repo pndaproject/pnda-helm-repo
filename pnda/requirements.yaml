@@ -26,8 +26,8 @@ dependencies:
 - name: opentsdb
   version: 0.1.0
   repository: file://../opentsdb
-  condition: hbase.enabled
+  condition: opentsdb.enabled
 - name: grafana
   version: 3.2.0
   repository: "https://kubernetes-charts.storage.googleapis.com/"
-  condition: hbase.enabled
+  condition: grafana.enabled
