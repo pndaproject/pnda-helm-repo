@@ -1,0 +1,17 @@
+#Headless service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "packageRepository.fullname" . }}
+  labels:
+    app: {{ template "packageRepository.name" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}  
+spec:
+  ports:
+    - port: 8888
+      name: packagerepository
+  clusterIP: None
+  selector:
+    app: {{ template "packageRepository.name" . }}
+    release: {{ .Release.Name }}
