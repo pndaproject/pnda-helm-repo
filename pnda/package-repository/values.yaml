@@ -1,0 +1,22 @@
+image:
+  repository: pnda/platform-package-repository
+  tag: release5.0
+  pullPolicy: IfNotPresent
+
+conf:
+  logLevel: INFO
+  packageCallback: http://console-backend-logger:3001/packages
+
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "10m"
+  limits:
+    memory: "1024Mi"
+    cpu: "1000m"
+ 
+persistence:
+  enabled: true
+  storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 5Gi

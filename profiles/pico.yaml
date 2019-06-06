@@ -1,4 +1,15 @@
 ################################
+# PNDA Services Configuration
+################################
+#
+package-repository:
+  persistence:
+    enabled: true
+    storageClass: "standard"
+    accessMode: ReadWriteOnce
+    size: 1Gi
+
+################################
 # Services Configuration
 ################################
 #
