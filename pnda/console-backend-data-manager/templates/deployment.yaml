@@ -36,4 +36,4 @@ spec:
       volumes:
         - name: data-manager-config
           configMap:
-            name: {{ template "console-backend-data-manager.name" . }}-config
+            name: {{ template "console-backend-data-manager.fullname" . }}-config

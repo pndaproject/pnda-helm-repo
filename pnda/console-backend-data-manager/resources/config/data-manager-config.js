@@ -1,7 +1,7 @@
 module.exports = {
-    whitelist: ['http://data-service:7000', 'http://deployment-manager:5000'],
+  whitelist: ['http://{{.Release.Name}}-data-service:7000', 'http://{{.Release.Name}}-deployment-manager:5000'],
   deployment_manager: {
-    host: "http://deployment-manager:5000",
+    host: "http://{{.Release.Name}}-deployment-manager:5000",
     API: {
       endpoints: "/environment/endpoints",
       packages_available: "/repository/packages?recency=999",
@@ -10,9 +10,9 @@ module.exports = {
     }
   },
   dataset_manager: {
-      host: "http://data-service:7000",
+    host: "http://{{.Release.Name}}-data-service:7000",
     API: {
-     datasets: "/api/v1/datasets"
+      datasets: "/api/v1/datasets"
     }
   },
   session: {
