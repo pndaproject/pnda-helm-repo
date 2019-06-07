@@ -1,7 +1,11 @@
 image:
-  repository: pnda/platform-deployment-manager
+  repository: pnda/console-frontend
   tag: release5.0
   pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
 
 conf:
   logLevel: INFO

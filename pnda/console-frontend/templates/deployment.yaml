@@ -1,0 +1,41 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "console-frontend.fullname" . }}
+  labels:
+    app: {{ template "console-frontend.name" . }}
+    chart: {{ template "console-frontend.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "console-frontend.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "console-frontend.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: REDIS
+              value: redis://redis-master
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html/conf/PNDA.json
+              subPath: PNDA.json
+              name: console-frontend-config
+            - mountPath: /etc/nginx/conf.d
+              name: console-nginx-config
+      volumes:
+        - name: console-frontend-config
+          configMap:
+            name: {{ template "console-frontend.fullname" . }}-config
+        - name: console-nginx-config
+          configMap:
+            name: {{ template "console-frontend.fullname" . }}-nginx-config
