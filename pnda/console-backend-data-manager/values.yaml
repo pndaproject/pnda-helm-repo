@@ -1,7 +1,11 @@
 image:
-  repository: pnda/platform-deployment-manager
+  repository: pnda/console-backend-data-manager
   tag: release5.0
   pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 3123
 
 conf:
   logLevel: INFO
