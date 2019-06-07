@@ -9,9 +9,9 @@
         "hadoop_manager_username" : "root",
         "hadoop_manager_password" : "",
         "cluster_root_user" : "root",
-        "cluster_private_key" : "{{ keys_directory }}/dm.pem",
-        "kafka_zookeeper" : "{{ kafka_zookeepers|join(',') }}",
-        "kafka_brokers" : "{{ kafka_brokers|join(',') }}",
+        "cluster_private_key" : "{ { keys_directory } }/dm.pem",
+        "kafka_zookeeper" : "{ { kafka_zookeepers|join(',') } }",
+        "kafka_brokers" : "{ { kafka_brokers|join(',') } }",
         "opentsdb" : "pnda-opentsdb",
         "kafka_manager" : "pnda-kafka-manager",
         "namespace": "platform_app",
@@ -19,12 +19,12 @@
         "jupyter_host": "hub",
         "jupyter_notebook_directory": "jupyter_notebooks",
         "app_packages_hdfs_path":"/pnda/deployment/app_packages",
-        "queue_policy": "{{ policy_file_link }}",
-        "flink_lib_dir": "{{ flink_lib_dir }}",
-        "flink_history_server": "{{ flink_history_server }}",
-        "spark_submit": "{{ resource_manager_path }}/bin/spark-submit",
-        "flink_host" : "{{ flink_host }}",
-        "flink": "{{ resource_manager_path }}/bin/flink"
+        "queue_policy": "{ { policy_file_link } }",
+        "flink_lib_dir": "{ { flink_lib_dir } }",
+        "flink_history_server": "{ { flink_history_server } }",
+        "spark_submit": "{ { resource_manager_path } }/bin/spark-submit",
+        "flink_host" : "{ { flink_host } }",
+        "flink": "{ { resource_manager_path } }/bin/flink"
     },
     "config": {
         "stage_root": "stage",
@@ -34,7 +34,7 @@
         "environment_sync_interval": 120,
         "package_callback": "http://console-backend-logger:3001/packages",
         "application_callback": "http://console-backend-logger:3001/applications",
-        "package_repository": "http://package-repository:8888",
+        "package_repository": "http://{{.Release.Name}}-package-repository:8888",
         "oozie_spark_version": "2"
     }
 }

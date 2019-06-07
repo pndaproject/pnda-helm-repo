@@ -38,4 +38,4 @@ spec:
       volumes:
         - name: deployment-manager-config
           configMap:
-            name: deployment-manager-config
+            name: {{ include "deployment-manager.fullname" . }}-config

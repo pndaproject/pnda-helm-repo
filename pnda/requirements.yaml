@@ -34,3 +34,6 @@ dependencies:
 - name: package-repository
   version: 0.1.0
   repository: file://./package-repository
+- name: deployment-manager
+  version: 0.1.0
+  repository: file://./deployment-manager
