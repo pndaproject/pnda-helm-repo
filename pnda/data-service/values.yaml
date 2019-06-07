@@ -1,0 +1,15 @@
+image:
+  repository: pnda/data-service
+  tag: release5.0
+  pullPolicy: IfNotPresent
+
+conf:
+  logLevel: INFO
+
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "10m"
+  limits:
+    memory: "1024Mi"
+    cpu: "1000m"

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "data-service.fullname" . }}
+  labels:
+    app: {{ template "data-service.name" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    app: {{ template "data-service.name" . }}
+    release: {{ .Release.Name }}
+  ports:
+    - port: 7000
+      name: a
+      targetPort: 7000
+    - port: 7001
+      name: b
+      targetPort: 7001

@@ -37,3 +37,6 @@ dependencies:
 - name: deployment-manager
   version: 0.1.0
   repository: file://./deployment-manager
+- name: data-service
+  version: 0.1.0
+  repository: file://./data-service
