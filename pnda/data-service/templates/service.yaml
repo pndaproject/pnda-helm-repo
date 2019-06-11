@@ -11,9 +11,7 @@ spec:
     app: {{ template "data-service.name" . }}
     release: {{ .Release.Name }}
   ports:
-    - port: 7000
-      name: a
-      targetPort: 7000
-    - port: 7001
-      name: b
-      targetPort: 7001
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http

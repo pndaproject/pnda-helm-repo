@@ -3,6 +3,10 @@ image:
   tag: release5.0
   pullPolicy: IfNotPresent
 
+service:
+  type: ClusterIP
+  port: 7000
+
 conf:
   logLevel: INFO
 

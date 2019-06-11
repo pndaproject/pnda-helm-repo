@@ -11,5 +11,7 @@ spec:
     app: {{ template "deployment-manager.name" . }}
     release: {{ .Release.Name }}
   ports:
-    - port: 5000
-      targetPort: 5000
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http

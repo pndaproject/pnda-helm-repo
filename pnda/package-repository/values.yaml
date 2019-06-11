@@ -3,9 +3,12 @@ image:
   tag: release5.0
   pullPolicy: IfNotPresent
 
+service:
+  type: ClusterIP
+  port: 5000
+
 conf:
   logLevel: INFO
-  packageCallback: http://console-backend-logger:3001/packages
 
 resources:
   requests:

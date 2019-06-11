@@ -25,6 +25,10 @@ spec:
         - name: {{ include "data-service.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
           command:
             - "python"
             - "apiserver.py"
