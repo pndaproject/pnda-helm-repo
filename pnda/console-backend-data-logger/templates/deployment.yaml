@@ -23,9 +23,13 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
           env:
             - name: REDIS
-              value: redis://redis-master
+              value: redis://{{.Release.Name}}-redis-master
           command:
             - "node"
             - "app.js"

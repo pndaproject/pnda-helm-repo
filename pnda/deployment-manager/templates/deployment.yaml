@@ -25,9 +25,10 @@ spec:
         - name: {{ include "deployment-manager.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
-          env:
-            - name: REDIS
-              value: redis://redis-master
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
           command:
             - "python3"
             - "app.py"

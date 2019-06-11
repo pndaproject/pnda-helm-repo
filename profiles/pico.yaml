@@ -98,3 +98,7 @@ hdfs:
       storageClass: "standard"
       accessMode: ReadWriteOnce
       size: 4Gi
+
+redis:
+  enabled: true
+  usePassword: false

@@ -5,7 +5,7 @@ metadata:
   labels:
     app: {{ include "packageRepository.name" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}  
+    heritage: {{ .Release.Service }}
 data:
   pr-config.json: |
     {
@@ -16,6 +16,7 @@ data:
     },
     "config": {
         "log_level":"{{ .Values.conf.logLevel }}",
-        "package_callback": "{{ .Values.conf.packageCallback }}"
+        "package_callback": "http://{{.Release.Name}}-console-backend-data-logger:3001/packages"
     }
     }
+

@@ -5,13 +5,13 @@ metadata:
   labels:
     app: {{ include "packageRepository.name" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}  
+    heritage: {{ .Release.Service }}
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: {{ include "packageRepository.name" . }}
-      release: {{ .Release.Name }} 
+      release: {{ .Release.Name }}
   serviceName: {{ include "packageRepository.fullname" . }}
   template:
     metadata:
@@ -19,17 +19,24 @@ spec:
         app: {{ include "packageRepository.name" . }}
         chart: {{ include "packageRepository.chart" . }}
         release: {{ .Release.Name }}
-        heritage: {{ .Release.Service }} 
+        heritage: {{ .Release.Service }}
     spec:
       containers:
       - name: {{ include "packageRepository.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        ports:
+          - name: http
+            containerPort: {{ .Values.service.port }}
+            protocol: TCP
+        command:
+          - "python3"
+          - "package_repository_rest_server.py"
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: packagerepo-config
-          mountPath: /opt/platform-package-repository/pr-config.json
+          mountPath: /package-repository/pr-config.json
           subPath: pr-config.json
         - name: packagerepo-data
           mountPath: /packages
