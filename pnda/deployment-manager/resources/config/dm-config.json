@@ -1,0 +1,40 @@
+{
+  "environment": {
+    "hadoop_distro":"none",
+    "hbase_thrift_server": "{{.Release.Name}}-hbase-master",
+    "webhdfs_host": "{{.Release.Name}}-hdfs-namenode",
+    "webhdfs_port": "50070",
+    "webhdfs_user": "root",
+        "hadoop_manager_host" : "{{.Release.Name}}-hbase-master",
+        "hadoop_manager_username" : "root",
+        "hadoop_manager_password" : "",
+        "cluster_root_user" : "root",
+        "cluster_private_key" : "{ { keys_directory } }/dm.pem",
+        "kafka_zookeeper" : "{ { kafka_zookeepers|join(',') } }",
+        "kafka_brokers" : "{ { kafka_brokers|join(',') } }",
+        "opentsdb" : "{{.Release.Name}}-opentsdb",
+        "kafka_manager" : "{{.Release.Name}}-kafka-manager",
+        "namespace": "platform_app",
+        "metric_logger_url": "http://{{.Release.Name}}-console-backend-data-logger:3001/metrics",
+        "jupyter_host": "hub",
+        "jupyter_notebook_directory": "jupyter_notebooks",
+        "app_packages_hdfs_path":"/pnda/deployment/app_packages",
+        "queue_policy": "{ { policy_file_link } }",
+        "flink_lib_dir": "{ { flink_lib_dir } }",
+        "flink_history_server": "{ { flink_history_server } }",
+        "spark_submit": "{ { resource_manager_path } }/bin/spark-submit",
+        "flink_host" : "{ { flink_host } }",
+        "flink": "{ { resource_manager_path } }/bin/flink"
+    },
+    "config": {
+        "stage_root": "stage",
+        "plugins_path": "plugins",
+        "log_level": "INFO",
+        "deployer_thread_limit": 100,
+        "environment_sync_interval": 120,
+        "package_callback": "http://{{.Release.Name}}-console-backend-data-logger:3001/packages",
+        "application_callback": "http://{{.Release.Name}}-console-backend-data-logger:3001/applications",
+        "package_repository": "http://{{.Release.Name}}-package-repository:8888",
+        "oozie_spark_version": "2"
+    }
+}

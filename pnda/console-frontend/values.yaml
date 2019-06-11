@@ -1,0 +1,24 @@
+image:
+  repository: pnda/console-frontend
+  tag: release5.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+conf:
+  logLevel: INFO
+
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "10m"
+  limits:
+    memory: "1024Mi"
+    cpu: "1000m"
+
+ingress:
+  enabled: false
+  hosts:
+    - console.pnda.io

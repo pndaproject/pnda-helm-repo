@@ -1,0 +1,19 @@
+image:
+  repository: pnda/console-backend-data-logger
+  tag: release5.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 3001
+
+conf:
+  logLevel: INFO
+
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "10m"
+  limits:
+    memory: "1024Mi"
+    cpu: "1000m"

@@ -1,4 +1,15 @@
 ################################
+# PNDA Services Configuration
+################################
+#
+package-repository:
+  persistence:
+    enabled: true
+    storageClass: "standard"
+    accessMode: ReadWriteOnce
+    size: 1Gi
+
+################################
 # Services Configuration
 ################################
 #
@@ -87,3 +98,13 @@ hdfs:
       storageClass: "standard"
       accessMode: ReadWriteOnce
       size: 4Gi
+
+redis:
+  enabled: true
+  usePassword: false
+
+console-frontend:
+  ingress:
+    enabled: true
+    hosts:
+      - console.pnda.io

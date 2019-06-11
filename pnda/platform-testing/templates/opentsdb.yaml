@@ -1,0 +1,36 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ template "platform-testing.fullname" . }}-tsdb
+  labels:
+    app: {{ template "platform-testing.name" . }}
+    chart: {{ template "platform-testing.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  schedule: "{{.Values.schedule}}"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ template "platform-testing.name" . }}
+            release: {{ .Release.Name }}
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: {{ .Chart.Name }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              command:
+                - "python"
+                - "monitor.py"
+                - "--plugin"
+                - "opentsdb"
+                - "--display"
+                - "--postjson"
+                - "http://{{.Release.Name}}-console-backend-data-logger:3001/metrics"
+                - "--extra"
+                - "--hosts {{.Release.Name}}-opentsdb:4242"
