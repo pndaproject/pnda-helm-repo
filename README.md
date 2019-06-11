@@ -86,11 +86,14 @@ helm install pnda --name pnda -f profile/local.yaml
 ```
 
 Include vhosts entries pointing to minikube VM IP to access web uis.
-e.g for notebooks.pnda.io in a linux client host:
-echo "\$(minikube ip) notebooks.pnda.io grafana.pnda.io" | sudo tee -a /etc/hosts
+For example, o a linux client host:
+```
+echo "\$(minikube ip) console.pnda.io notebooks.pnda.io grafana.pnda.io" | sudo tee -a /etc/hosts
+```
 
-Access jupyerhub at http://notebooks.pnda.io with user pnda password pnda
-Access grafana at http://grafana.pnda.io with user pnda password pnda
+- Access PNDA console at http://console.pnda.io with user pnda password pnda
+- Access jupyerhub at http://notebooks.pnda.io with user pnda password pnda
+- Access grafana at http://grafana.pnda.io with user pnda password pnda
 
 ## Credits
 
