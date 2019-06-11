@@ -4,7 +4,7 @@ image:
   pullPolicy: IfNotPresent
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 80
 
 conf:
@@ -17,3 +17,8 @@ resources:
   limits:
     memory: "1024Mi"
     cpu: "1000m"
+
+ingress:
+  enabled: false
+  hosts:
+    - console.pnda.io
