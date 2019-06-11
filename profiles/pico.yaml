@@ -102,3 +102,9 @@ hdfs:
 redis:
   enabled: true
   usePassword: false
+
+console-frontend:
+  ingress:
+    enabled: true
+    hosts:
+      - console.pnda.io
