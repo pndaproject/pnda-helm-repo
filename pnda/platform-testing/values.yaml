@@ -9,7 +9,7 @@ schedule: "* * * * *"
 image:
   repository: pnda/platform-testing
   tag: release5.0
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 conf:
   logLevel: INFO

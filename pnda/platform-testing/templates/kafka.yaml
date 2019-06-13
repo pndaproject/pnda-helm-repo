@@ -1,4 +1,4 @@
-apiVersion: batch/v1beta1
+ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: {{ template "platform-testing.fullname" . }}-kafka
@@ -25,7 +25,7 @@ spec:
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
               imagePullPolicy: {{ .Values.image.pullPolicy }}
               command:
-                - "python"
+                - "python3"
                 - "monitor.py"
                 - "--plugin"
                 - "kafka"
@@ -33,4 +33,4 @@ spec:
                 - "--postjson"
                 - "http://{{.Release.Name}}-console-backend-data-logger:3001/metrics"
                 - "--extra"
-                - "--jmxproxy {{.Release.Name}}-jmxproxy:8000 --brokerlist {{.Release.Name}}-cp-kafka:9092 --zkconnect {{.Release.Name}}-cp-zookeeper:2181 --prod2cons"
+                - "--jmxproxy {{.Release.Name}}-jmxproxy:8000 --brokerlist {{.Release.Name}}-cp-kafka-jmx:5555 --zkconnect {{.Release.Name}}-cp-zookeeper:2181 --prod2cons"
