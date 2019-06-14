@@ -1,7 +1,7 @@
 image:
   repository: pnda/data-service
   tag: release5.0
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 service:
   type: ClusterIP
