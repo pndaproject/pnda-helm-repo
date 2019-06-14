@@ -31,13 +31,16 @@ data:
     # installing libraries if any - (resource urls added comma separated to the ACP system variable)
     cd $HADOOP_PREFIX/share/hadoop/common ; for cp in ${ACP//,/ }; do  echo == $cp; curl -LO $cp ; done; cd -
     if [[ "${HOSTNAME}" =~ "namenode" ]]; then
-      mkdir -p /root/hdfs/namenode
-      $HADOOP_PREFIX/bin/hdfs namenode -format -force -nonInteractive
+      if [ ! -d "/dfs/name" ]; then
+        mkdir -p /dfs/name
+        $HADOOP_PREFIX/bin/hdfs namenode -format -force -nonInteractive
+      fi
       $HADOOP_PREFIX/sbin/hadoop-daemon.sh start namenode
     fi
     if [[ "${HOSTNAME}" =~ "datanode" ]]; then
-      mkdir -p /root/hdfs/datanode
-
+      if [ ! -d "/dfs/data" ]; then
+        mkdir -p /dfs/data
+      fi
       #  wait up to 30 seconds for namenode
       (while [[ $count -lt 15 && -z `curl -sf http://{{ include "hdfs.fullname" . }}-namenode:50070` ]]; do ((count=count+1)) ; echo "Waiting for {{ include "hdfs.fullname" . }}-namenode" ; sleep 2; done && [[ $count -lt 15 ]])
       [[ $? -ne 0 ]] && echo "Timeout waiting for hdfs namenode, exiting." && exit 1
@@ -70,13 +73,13 @@ data:
     <configuration>
       <property><name>dfs.datanode.use.datanode.hostname</name><value>false</value></property>
       <property><name>dfs.client.use.datanode.hostname</name><value>false</value></property>
-      <property><name>dfs.datanode.data.dir</name><value>file:///root/hdfs/datanode</value>
+      <property><name>dfs.datanode.data.dir</name><value>file:///dfs/data</value>
         <description>DataNode directory</description>
       </property>
 
       <property>
         <name>dfs.namenode.name.dir</name>
-        <value>file:///root/hdfs/namenode</value>
+        <value>file:///dfs/name</value>
         <description>NameNode directory for namespace and transaction logs storage.</description>
       </property>
 

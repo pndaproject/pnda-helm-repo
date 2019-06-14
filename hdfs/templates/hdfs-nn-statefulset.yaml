@@ -67,7 +67,7 @@ spec:
         - name: hadoop-config
           mountPath: /tmp/hadoop-config
         - name: dfs
-          mountPath: /root/hdfs/namenode
+          mountPath: /dfs
       volumes:
       - name: hadoop-config
         configMap:
