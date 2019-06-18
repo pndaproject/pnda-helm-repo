@@ -56,6 +56,7 @@ dependencies:
 - name: platform-testing
   version: 0.1.0
   repository: file://./platform-testing
+  condition: platform-testing.enabled
 - name: jmxproxy
   version: 3.4.0
   repository: file://./jmxproxy

@@ -28,7 +28,6 @@ grafana:
       # label that the configmaps with datasources are marked with
       label: grafana_datasource
 
-
 ## ------------------------------------------------------
 ## Jupyterhub
 ## ------------------------------------------------------
@@ -93,9 +92,21 @@ kafka-manager:
      jmxEnabled: "true"
      tuning: {}
 
-
 ## ------------------------------------------------------
 ## Spark standalone
 ## ------------------------------------------------------
 spark-standalone:
   enabled: false
+
+platform-testing:
+  enabled: true
+
+redis:
+  enabled: true
+  usePassword: false
+
+console-frontend:
+  ingress:
+    enabled: true
+    hosts:
+      - console.pnda.io

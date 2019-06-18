@@ -99,10 +99,6 @@ hdfs:
       accessMode: ReadWriteOnce
       size: 4Gi
 
-redis:
-  enabled: true
-  usePassword: false
-
 console-frontend:
   ingress:
     enabled: true
