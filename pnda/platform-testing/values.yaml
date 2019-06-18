@@ -12,7 +12,7 @@ image:
   pullPolicy: Always
 
 conf:
-  logLevel: INFO
+  logLevel: WARNING
 
 resources:
   requests:

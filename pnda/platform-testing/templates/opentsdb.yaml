@@ -34,3 +34,11 @@ spec:
                 - "http://{{.Release.Name}}-console-backend-data-logger:3001/metrics"
                 - "--extra"
                 - "--hosts {{.Release.Name}}-opentsdb:4242"
+              volumeMounts:
+                - mountPath: /platform-testing/logging.conf
+                  subPath: logging.conf
+                  name: logging-config
+          volumes:
+            - name: logging-config
+              configMap:
+                name: {{ include "platform-testing.fullname" . }}-logging
