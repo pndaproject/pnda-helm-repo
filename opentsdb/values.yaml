@@ -6,7 +6,7 @@
 # See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/master/image
 image:
   repository: gradiant/opentsdb
-  tag: 2.3.1
+  tag: 2.4.0
   pullPolicy: Always
 
 # Just to use hbase client shell to create initial opentsdb tables
