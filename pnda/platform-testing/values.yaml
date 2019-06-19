@@ -8,7 +8,7 @@ schedule: "* * * * *"
 
 image:
   repository: pnda/platform-testing
-  tag: release5.0
+  tag: latest-py3
   pullPolicy: Always
 
 conf:

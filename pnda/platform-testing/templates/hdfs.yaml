@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ template "platform-testing.fullname" . }}-zk
+  name: {{ template "platform-testing.fullname" . }}-hdfs
   labels:
     app: {{ template "platform-testing.name" . }}
     chart: {{ template "platform-testing.chart" . }}
@@ -29,12 +29,12 @@ spec:
                 - "python"
                 - "monitor.py"
                 - "--plugin"
-                - "zookeeper"
+                - "hdfs"
                 - "--display"
                 - "--postjson"
                 - "http://{{.Release.Name}}-console-backend-data-logger:3001/metrics"
                 - "--extra"
-                - "--zconnect {{.Release.Name}}-cp-zookeeper:2181"
+                - "--host {{.Release.Name}}-hdfs-namenode"
               volumeMounts:
                 - mountPath: /platform-testing/logging.conf
                   subPath: logging.conf
