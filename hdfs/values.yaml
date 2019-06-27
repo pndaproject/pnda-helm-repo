@@ -41,12 +41,12 @@ hdfs:
 persistence:
   nameNode:
     enabled: false
-    storageClass: "-"
+    storageClass:
     accessMode: ReadWriteOnce
     size: 50Gi
 
   dataNode:
     enabled: false
-    storageClass: "-"
+    storageClass:
     accessMode: ReadWriteOnce
     size: 200Gi

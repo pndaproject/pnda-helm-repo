@@ -35,13 +35,6 @@ jupyterhub:
   enabled: true
   singleuser:
     serviceAccountName: pnda
-    storage:
-      dynamic:
-        storageClass: standard
-  hub:
-    db:
-      pvc:
-        storageClassName: standard
   ingress:
     enabled: false
     annotations:
@@ -70,14 +63,11 @@ confluent-platform:
   cp-zookeeper:
     persistence:
       enabled: true
-      dataLogDirStorageClass: "standard"
-      dataDirStorageClass: "standard"
   cp-kafka:
     image: confluentinc/cp-kafka
     imageTag: 5.0.1
     persistence:
       enable: true
-      storageClass: "standard"
 kafka-manager:
   enabled: true
   image:

@@ -20,6 +20,6 @@ resources:
 
 persistence:
   enabled: true
-  storageClass: "-"
+  storageClass:
   accessMode: ReadWriteOnce
   size: 5Gi
