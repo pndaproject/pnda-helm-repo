@@ -32,7 +32,7 @@ spec:
     matchLabels:
       app: {{ template "spark.name" . }}
       release: {{ .Release.Name }}
-  serviceName: {{ template "spark.fullname" . }}-standalone
+  serviceName: {{ template "spark.fullname" . }}
   template:
     metadata:
       labels:

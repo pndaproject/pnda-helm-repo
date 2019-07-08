@@ -12,7 +12,7 @@ workers: 1
 ## Image Info
 ## ref: https://hub.docker.com/r/gradiant/spark
 image: gradiant/spark
-imageTag: 2.4.0-python
+imageTag: 2.4.2-python
 
 # Set this to set ui access through ingress controller @ http://releaseName-chartName.ingressDomain
 ingressDomain: local
@@ -31,7 +31,7 @@ master:
   ## Additional env variables
   customEnv: {}
 
-  ## Kafka JVM Heap Option
+  ## JVM Heap Option
   heapOptions: "-Xms1G -Xmx1G"
 
   resources: {}
