@@ -9,6 +9,13 @@ service:
 
 conf:
   logLevel: INFO
+  edgeNode: ""
+  hdfsLink: "hdfs.pnda.io"
+  kafkaManagerLink: "kafka-manager.pnda.io"
+  grafanaLink: "grafana.pnda.io"
+  kibanaLink: "kibana.pnda.io"
+  jupyterLink: "notebooks.pnda.io"
+  httpfsLink: ""
 
 resources:
   requests:
