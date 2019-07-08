@@ -9,7 +9,7 @@ schedule: "* * * * *"
 image:
   repository: pnda/platform-testing
   tag: latest-py3
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 conf:
   logLevel: WARNING
