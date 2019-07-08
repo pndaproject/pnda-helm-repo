@@ -80,14 +80,13 @@ hdfs:
     tag: 2.7.7
     pullPolicy: Always
   conf:
-    hdfs-site:
+    hdfsSite:
       dfs.replication: 1
-  hdfs:
-    nameNode:
-      pdbMinAvailable: 1
-    dataNode:
-      replicas: 1
-      pdbMinAvailable: 1
+  nameNode:
+    pdbMinAvailable: 1
+  dataNode:
+    replicas: 1
+    pdbMinAvailable: 1
   persistence:
     nameNode:
       enabled: true

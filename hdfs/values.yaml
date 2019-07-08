@@ -12,32 +12,49 @@ hadoopVersion: 2.7.7
 antiAffinity: "soft"
 
 conf:
-  core-site:
-  hdfs-site:
+  coreSite:
+  hdfsSite:
     dfs.replication: 3
 
-hdfs:
-  nameNode:
-    port: 8020
-    pdbMinAvailable: 1
-    resources:
-      requests:
-        memory: "256Mi"
-        cpu: "10m"
-      limits:
-        memory: "2048Mi"
-        cpu: "1000m"
-  dataNode:
-    replicas: 1
-    pdbMinAvailable: 1
-    resources:
-      requests:
-        memory: "256Mi"
-        cpu: "10m"
-      limits:
-        memory: "2048Mi"
-        cpu: "1000m"
+nameNode:
+  port: 8020
+  pdbMinAvailable: 1
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "10m"
+    limits:
+      memory: "2048Mi"
+      cpu: "1000m"
+dataNode:
+  replicas: 1
+  pdbMinAvailable: 1
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "10m"
+    limits:
+      memory: "2048Mi"
+      cpu: "1000m"
 
+ingress:
+  nameNode:
+    enabled: false
+    annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    labels: {}
+    path: /
+    host: "hdfs-namenode.local"
+  dataNode:
+    enabled: false
+    annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    labels: {}
+    path: /
+    host: hdfs-datanode.local
+    
 persistence:
   nameNode:
     enabled: false

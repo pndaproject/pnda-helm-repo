@@ -11,7 +11,7 @@ metadata:
     component: datanode
 spec:
   serviceName: {{ include "hdfs.fullname" . }}-datanode
-  replicas: {{ .Values.hdfs.dataNode.replicas }}
+  replicas: {{ .Values.dataNode.replicas }}
   template:
     metadata:
       labels:
@@ -50,7 +50,7 @@ spec:
            - "/tmp/hadoop-config/bootstrap.sh"
            - "-d"
         resources:
-{{ toYaml .Values.hdfs.dataNode.resources | indent 10 }}
+{{ toYaml .Values.dataNode.resources | indent 10 }}
         readinessProbe:
           httpGet:
             path: /

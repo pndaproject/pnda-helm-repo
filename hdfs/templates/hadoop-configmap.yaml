@@ -7,112 +7,15 @@ metadata:
     chart: {{ include "hdfs.chart" . }}
     release: {{ .Release.Name }}
 data:
-  bootstrap.sh: |
-    #!/bin/bash
-
-    : ${HADOOP_PREFIX:=/usr/local/hadoop}
-
-    . $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
-
-    # Directory to find config artifacts
-    CONFIG_DIR="/tmp/hadoop-config"
-
-    # Copy config files from volume mount
-
-    for f in slaves core-site.xml hdfs-site.xml mapred-site.xml yarn-site.xml; do
-      if [[ -e ${CONFIG_DIR}/$f ]]; then
-        cp ${CONFIG_DIR}/$f $HADOOP_PREFIX/etc/hadoop/$f
-      else
-        echo "ERROR: Could not find $f in $CONFIG_DIR"
-        exit 1
-      fi
-    done
-
-    # installing libraries if any - (resource urls added comma separated to the ACP system variable)
-    cd $HADOOP_PREFIX/share/hadoop/common ; for cp in ${ACP//,/ }; do  echo == $cp; curl -LO $cp ; done; cd -
-    if [[ "${HOSTNAME}" =~ "namenode" ]]; then
-      if [ ! -d "/dfs/name" ]; then
-        mkdir -p /dfs/name
-        $HADOOP_PREFIX/bin/hdfs namenode -format -force -nonInteractive
-      fi
-      $HADOOP_PREFIX/sbin/hadoop-daemon.sh start namenode
-    fi
-    if [[ "${HOSTNAME}" =~ "datanode" ]]; then
-      if [ ! -d "/dfs/data" ]; then
-        mkdir -p /dfs/data
-      fi
-      #  wait up to 30 seconds for namenode
-      (while [[ $count -lt 15 && -z `curl -sf http://{{ include "hdfs.fullname" . }}-namenode:50070` ]]; do ((count=count+1)) ; echo "Waiting for {{ include "hdfs.fullname" . }}-namenode" ; sleep 2; done && [[ $count -lt 15 ]])
-      [[ $? -ne 0 ]] && echo "Timeout waiting for hdfs namenode, exiting." && exit 1
-
-      $HADOOP_PREFIX/sbin/hadoop-daemon.sh start datanode
-    fi
-    if [[ $1 == "-d" ]]; then
-      until find ${HADOOP_PREFIX}/logs -mmin -1 | egrep -q '.*'; echo "`date`: Waiting for logs..." ; do sleep 2 ; done
-      tail -F ${HADOOP_PREFIX}/logs/* &
-      while true; do sleep 1000; done
-    fi
-
-    if [[ $1 == "-bash" ]]; then
-      /bin/bash
-    fi
-  core-site.xml: |
-    <?xml version="1.0"?>
-    <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
-    <configuration>
-      <property><name>fs.defaultFS</name><value>hdfs://{{ include "hdfs.fullname" . }}-namenode:{{ .Values.hdfs.nameNode.port }}/</value></property>
-      {{- if index .Values.conf "core-site" }}
-      {{- range $key, $value := index .Values.conf "core-site" }}
-      <property><name>{{ $key }}</name><value>{{ $value }}</value></property>
-      {{- end }}
-      {{- end }}
-    </configuration>
-  hdfs-site.xml: |
-    <?xml version="1.0"?>
-    <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
-    <configuration>
-      <property><name>dfs.datanode.use.datanode.hostname</name><value>false</value></property>
-      <property><name>dfs.client.use.datanode.hostname</name><value>false</value></property>
-      <property><name>dfs.datanode.data.dir</name><value>file:///dfs/data</value>
-        <description>DataNode directory</description>
-      </property>
-
-      <property>
-        <name>dfs.namenode.name.dir</name>
-        <value>file:///dfs/name</value>
-        <description>NameNode directory for namespace and transaction logs storage.</description>
-      </property>
-
-      <property>
-        <name>dfs.namenode.datanode.registration.ip-hostname-check</name>
-        <value>false</value>
-      </property>
-
-      <!-- Bind to all interfaces -->
-      <property>
-        <name>dfs.namenode.rpc-bind-host</name>
-        <value>0.0.0.0</value>
-      </property>
-      <property>
-        <name>dfs.namenode.servicerpc-bind-host</name>
-        <value>0.0.0.0</value>
-      </property>
-      <!-- /Bind to all interfaces -->
-      {{- if index .Values.conf "hdfs-site" }}
-      {{- range $key, $value := index .Values.conf "hdfs-site" }}
-      <property><name>{{ $key }}</name><value>{{ $value }}</value></property>
-      {{- end }}
-      {{- end }}
-    </configuration>
-  mapred-site.xml: |
-    <?xml version="1.0"?>
-    <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
-    <configuration>
-    </configuration>
-  yarn-site.xml: |
-    <?xml version="1.0"?>
-    <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
-    <configuration>
-    </configuration>
+  bootstrap.sh: |-
+{{ tpl (.Files.Get "resources/config/bootstrap.sh") . | indent 4 }}
+  core-site.xml: |-
+{{ tpl (.Files.Get "resources/config/core-site.xml") . | indent 4 }}
+  hdfs-site.xml: |-
+{{ tpl (.Files.Get "resources/config/hdfs-site.xml") . | indent 4 }}
+  mapred-site.xml: |-
+{{ tpl (.Files.Get "resources/config/mapred-site.xml") . | indent 4 }}
+  yarn-site.xml: |-
+{{ tpl (.Files.Get "resources/config/yarn-site.xml") . | indent 4 }}
   slaves: |
     localhost

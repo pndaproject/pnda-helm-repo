@@ -13,4 +13,4 @@ spec:
       app: {{ include "hdfs.name" . }}
       release: {{ .Release.Name }}
       component: datanode
-  minAvailable: {{ .Values.hdfs.dataNode.pdbMinAvailable }}
+  minAvailable: {{ .Values.dataNode.pdbMinAvailable }}
