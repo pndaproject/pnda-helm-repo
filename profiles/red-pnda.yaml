@@ -1,18 +1,27 @@
-################################
-# PNDA Services Configuration
-################################
-#
+## ----------------------------
+## PNDA Components Configuration
+## ----------------------------
+
 package-repository:
   persistence:
     enabled: true
-    storageClass: "standard"
     accessMode: ReadWriteOnce
     size: 1Gi
 
-################################
-# Services Configuration
-################################
-#
+console-frontend:
+  conf:
+    hdfsLink: "http://hdfs.red-pnda.io"
+    kafkaManagerLink: "http://kafka-manager.red-pnda.io"
+    grafanaLink: "http://grafana.red-pnda.io"
+    jupyterLink: "http://notebooks.red-pnda.io"
+  ingress:
+    enabled: true
+    hosts:
+      - console.red-pnda.io
+
+## ----------------------------------
+## 3rd party Components Configuration
+## ----------------------------------
 
 grafana:
   adminUser: "pnda"
@@ -20,7 +29,13 @@ grafana:
   ingress:
     enabled: true
     hosts:
-      - grafana.pnda.io
+      - grafana.red-pnda.io
+
+kafka-manager:
+  ingress:
+    enabled: true
+    hosts:
+      - kafka-manager.red-pnda.io
 
 # Check https://zero-to-jupyterhub.readthedocs.io/en/latest/ for customize this section
 jupyterhub:
@@ -39,27 +54,15 @@ jupyterhub:
     # edit with your own 32 bytes secretToken (e.g. generate with openssl rand -hex 32)
     secretToken: "83fc7b97f79e48a88dd565397a165ebfa9053e474350bb338448b94c6b19c076"
   singleuser:
-    image:
-      # Check https://github.com/Gradiant/dockerized-jupyter/blob/master/Dockerfile
-      name: gradiant/jupyter
-      tag: 5.7.4
+    # Workaround  for microk8s https://github.com/jupyterhub/zero-to-jupyterhub-k8s/issues/1189#issuecomment-472601915
+    cloudMetadata:
+      enabled: true
   ingress:
     enabled: true
     hosts:
-      - notebooks.pnda.io
+      - notebooks.red-pnda.io
 
-## ------------------------------------------------------
-## Confluent Platform
-## ------------------------------------------------------
-# kafka and zookeeper enabled by default @ values.yaml
-# ksql kafka-rest kafka-connect schema-registry disabled by default @ values.yaml
-cp-zookeeper:
-  enabled: true
-cp-kafka:
-  enabled: false
-# Since cp-platform define all cp-services as subcharts we have to configure
-# them with the parent chart name as root
-# (we set 'confluent-platform' as an alias name in requirements.yaml)
+# Setting kafka and zookeeper instances to 1
 confluent-platform:
   cp-zookeeper:
     servers: 1
@@ -68,17 +71,15 @@ confluent-platform:
     configurationOverrides:
       offsets.topic.replication.factor: "1"
       default.replication.factor: "1"
-################################
-# Hadoop Platform
-################################
+
+# Setting hdfs-namenode and hdfs-datanode instances to 1
 hdfs:
   enabled: true
   # The base hadoop image to use for all components.
-  # See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/master/image
   image:
     repository: gradiant/hadoop-base
     tag: 2.7.7
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
   conf:
     hdfsSite:
       dfs.replication: 1
@@ -90,11 +91,27 @@ hdfs:
   persistence:
     nameNode:
       enabled: true
-      storageClass: "standard"
       accessMode: ReadWriteOnce
       size: 4Gi
     dataNode:
       enabled: true
-      storageClass: "standard"
       accessMode: ReadWriteOnce
       size: 4Gi
+  ingress:
+    nameNode:
+      enabled: true
+      path: /
+      host: "hdfs.red-pnda.io"
+
+# Setting hbase-region-server instances to 1
+hbase:
+  regionServer:
+    replicas: 1
+
+# Setting opentsdb daemons instances to 1
+opentsdb:
+  daemons: 1
+
+# Setting spark-standalone worker instances to 1
+spark-standalone:
+  workers: 1
