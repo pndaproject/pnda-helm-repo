@@ -33,8 +33,26 @@ grafana:
 ## ------------------------------------------------------
 jupyterhub:
   enabled: true
+  hub:
+    uid: 0
+    fsGid: 0
+    image:
+      name: pnda/k8s-hub
+      tag: '0.8.2'
+    extraConfig:  
+      00-custom-singleuser-hostname: |
+         c.KubeSpawner.extra_pod_config = {
+            "hostname": "jupyter-{username}",
+            "subdomain": "hub-subdomain"
+         }
   singleuser:
     serviceAccountName: pnda
+    image:
+      # Check https://github.com/Gradiant/dockerized-jupyter/blob/master/Dockerfile
+      name: gradiant/jupyter
+      tag: 5.7.8
+    extraEnv:
+      SPARKCONF_SPARK_MASTER: "spark://spark-standalone:7077"
   ingress:
     enabled: false
     annotations:
