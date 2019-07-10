@@ -7,7 +7,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
- ports:
+  ports:
     - port: {{ .Values.master.ui_port }}
       name: gui
     - port: {{ .Values.master.port }}
