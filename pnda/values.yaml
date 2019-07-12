@@ -1,92 +1,11 @@
-### General PNDA Values
+## ----------------------------
+## PNDA Components Configuration
+## ----------------------------
+
+# General PNDA Values
 serviceAccountName: pnda
 roleName: pnda-role
 roleBindingName: pnda
-
-hbase:
-  enable: true
-hdfs:
-  enabled: true
-  # The base hadoop image to use for all components.
-  # See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/master/image
-  image:
-    repository: gradiant/hadoop-base
-    tag: 2.7.7
-    pullPolicy: IfNotPresent
-  # The version of the hadoop libraries being used in the image.
-  hadoopVersion: 2.7.7
-  conf:
-    hdfs-site:
-      #hdfs property needed if hbase is deploy with hdfs
-      dfs.datanode.max.transfer.threads: 4096
-
-grafana:
-  enable: true
-  sidecar:
-    datasources:
-      enabled: true
-      # label that the configmaps with datasources are marked with
-      label: grafana_datasource
-
-## ------------------------------------------------------
-## Jupyterhub
-## ------------------------------------------------------
-jupyterhub:
-  enabled: true
-  singleuser:
-    serviceAccountName: pnda
-  ingress:
-    enabled: false
-    annotations:
-      nginx.ingress.kubernetes.io/proxy-body-size: 64m
-
-## ------------------------------------------------------
-## Confluent Platform
-## ------------------------------------------------------
-# To enable/disable cp services
-cp-schema-registry:
-  enabled: false
-cp-kafka-rest:
-  enabled: false
-cp-kafka-connect:
-  enabled: false
-cp-ksql-server:
-  enabled: false
-cp-zookeeper:
-  enabled: true
-cp-kafka:
-  enabled: true
-# Since cp-platform define all cp-services as subcharts we have to configure
-# them with the parent chart name as root
-# (we set 'confluent-platform' as an alias name in requirements.yaml)
-confluent-platform:
-  cp-zookeeper:
-    persistence:
-      enabled: true
-  cp-kafka:
-    image: confluentinc/cp-kafka
-    imageTag: 5.0.1
-    persistence:
-      enable: true
-kafka-manager:
-  enabled: true
-  image:
-    repository: gradiant/kafka-manager
-    tag: 2.0.0.2
-    pullPolicy: Always
-  clusters:
-   - name: "PNDA-Kafka"
-     #It will default to the Kafka-manager zookeeper hosts if not specified
-     # zkHosts: ""
-     kafkaVersion: "2.0.0"
-     jmxEnabled: "true"
-     tuning: {}
-
-## ------------------------------------------------------
-## Spark standalone
-## ------------------------------------------------------
-spark-standalone:
-  enabled: false
 
 platform-testing:
   enabled: true
@@ -96,7 +15,165 @@ redis:
   usePassword: false
 
 console-frontend:
+  conf:
+    hdfsLink: "http://hdfs.pnda.io"
+    kafkaManagerLink: "http://kafka-manager.pnda.io"
+    grafanaLink: "http://grafana.pnda.io"
+    jupyterLink: "http://notebooks.pnda.io"
   ingress:
     enabled: true
     hosts:
       - console.pnda.io
+
+## ----------------------------------
+## 3rd party Components Configuration
+## ----------------------------------
+
+grafana:
+  enabled: true
+  sidecar:
+    datasources:
+      enabled: true
+      # label that the configmaps with datasources are marked with
+      label: grafana_datasource
+  adminUser: "pnda"
+  adminPassword: "pnda"
+  ingress:
+    enabled: true
+    hosts:
+      - grafana.pnda.io
+
+kafka-manager:
+  enabled: true
+  image:
+    repository: gradiant/kafka-manager
+    tag: 2.0.0.2
+  clusters:
+   - name: "PNDA-Kafka"
+     #It will default to the Kafka-manager zookeeper hosts if not specified
+     # zkHosts: ""
+     kafkaVersion: "2.0.0"
+     jmxEnabled: "true"
+     tuning: {}
+  ingress:
+    enabled: true
+    hosts:
+      - kafka-manager.pnda.io
+
+# Check https://zero-to-jupyterhub.readthedocs.io/en/latest/ for customize this section
+jupyterhub:
+  enabled: true
+  hub:
+    uid: 0
+    fsGid: 0
+    image:
+      name: pnda/k8s-hub
+      tag: '0.8.2'
+    extraConfig:  
+      00-custom-singleuser-hostname: |
+         c.KubeSpawner.extra_pod_config = {
+            "hostname": "jupyter-{username}",
+            "subdomain": "hub-subdomain"
+         }
+  auth:
+    type: dummy
+    dummy:
+      password: pnda
+    admin:
+      users:
+        - pnda
+  proxy:
+    # edit with your own 32 bytes secretToken (e.g. generate with openssl rand -hex 32)
+    secretToken: "83fc7b97f79e48a88dd565397a165ebfa9053e474350bb338448b94c6b19c076"
+  singleuser:
+    serviceAccountName: pnda
+    image:
+      # Check https://github.com/Gradiant/dockerized-jupyter/blob/master/Dockerfile
+      name: gradiant/jupyter
+      tag: 5.7.8
+    extraEnv:
+      SPARKCONF_SPARK_MASTER: "spark://spark-standalone:7077"
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 64m
+    hosts:
+      - notebooks.pnda.io
+# enable kafka and zookeeper confluent components. Disable the rest.
+cp-zookeeper:
+  enabled: true
+cp-kafka:
+  enabled: true
+cp-schema-registry:
+  enabled: false
+cp-kafka-rest:
+  enabled: false
+cp-kafka-connect:
+  enabled: false
+cp-ksql-server:
+  enabled: false
+# Since cp-platform define all cp-services as subcharts we have to configure
+# them with the parent chart name as root
+# (we set 'confluent-platform' as an alias name in requirements.yaml)
+# Setting kafka and zookeeper instances to 1
+confluent-platform:
+  cp-zookeeper:
+    servers: 1
+  cp-kafka:
+    image: confluentinc/cp-kafka
+    imageTag: 5.0.1
+    brokers: 1
+    configurationOverrides:
+      offsets.topic.replication.factor: "1"
+      default.replication.factor: "1"
+
+# Setting hdfs-namenode and hdfs-datanode instances to 1
+hdfs:
+  enabled: true
+  # The base hadoop image to use for all components.
+  image:
+    repository: gradiant/hadoop-base
+    tag: 2.7.7
+    pullPolicy: IfNotPresent
+  conf:
+    hdfsSite:
+      dfs.replication: 1
+  nameNode:
+    pdbMinAvailable: 1
+  dataNode:
+    replicas: 1
+    pdbMinAvailable: 1
+  persistence:
+    nameNode:
+      enabled: true
+      accessMode: ReadWriteOnce
+      size: 4Gi
+    dataNode:
+      enabled: true
+      accessMode: ReadWriteOnce
+      size: 4Gi
+  ingress:
+    nameNode:
+      enabled: true
+      path: /
+      host: "hdfs.pnda.io"
+
+# Setting hbase-region-server instances to 1
+hbase:
+  enabled: true
+  regionServer:
+    replicas: 1
+
+# Setting opentsdb daemons instances to 1
+opentsdb:
+  enabled: true
+  daemons: 1
+
+# Setting spark-standalone worker instances to 1
+spark-standalone:
+  enabled: true
+  workers: 1
+  ingress:
+    enabled: true
+    hosts:
+      - spark.pnda.io

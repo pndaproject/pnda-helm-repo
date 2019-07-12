@@ -1,7 +1,8 @@
+#Headless service
 apiVersion: v1
 kind: Service
 metadata:
-  name: spark-standalone
+  name: {{ template "spark.fullname" . }}
   labels:
     app: {{ template "spark.name" . }}
     release: {{ .Release.Name }}
@@ -12,6 +13,7 @@ spec:
       name: gui
     - port: {{ .Values.master.port }}
       name: spark
+  clusterIP: None
   selector:
     app: {{ template "spark.name" . }}
     release: {{ .Release.Name }}

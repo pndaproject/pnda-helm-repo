@@ -1,0 +1,12 @@
+# Almost the same values as PNDA default values (pnda/values.yaml) since are minimum requirements for a PNDA-cluster
+
+
+# Check https://zero-to-jupyterhub.readthedocs.io/en/latest/ for customize this section
+jupyterhub:
+  proxy:
+    # edit with your own 32 bytes secretToken (e.g. generate with openssl rand -hex 32)
+    secretToken: "83fc7b97f79e48a88dd565397a165ebfa9053e474350bb338448b94c6b19c076"
+  singleuser:
+    # Workaround  for microk8s https://github.com/jupyterhub/zero-to-jupyterhub-k8s/issues/1189#issuecomment-472601915
+    cloudMetadata:
+      enabled: true
