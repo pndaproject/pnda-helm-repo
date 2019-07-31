@@ -1,0 +1,19 @@
+{{- if  .Values.monitoring.prometheusOperator.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    monitoring: prometheusOperator
+  name: hdfs-kafka-spark-metrics
+  namespace: {{ .Values.monitoring.prometheusOperator.namespace }}
+spec:
+  endpoints:
+  - port: metrics
+    interval: 10s
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      monitoring: prometheus
+{{- end }}

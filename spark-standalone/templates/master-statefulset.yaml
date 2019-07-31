@@ -41,13 +41,44 @@ spec:
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
     spec:
+      {{- if .Values.master.prometheus.exporter.enabled }}
+      volumes:
+      - name: spark-exporter
+        configMap:
+          name: {{ .Release.Name }}-spark-exporter
+      - name: spark-graphite-mapping
+        configMap:
+          name: {{ .Release.Name }}-spark-graphite-mapping
+      {{- end }}
       containers:
+      {{- if .Values.master.prometheus.exporter.enabled }}
+      - name: {{ template "spark.fullname" . }}-exporter
+        image: "{{ .Values.master.prometheus.image }}"
+        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+        ports:
+        - containerPort: {{ .Values.master.prometheus.port }}
+        command:
+        - /bin/graphite_exporter
+        args:
+        - --graphite.mapping-config
+        - /tmp/graphite_mapping.conf
+        volumeMounts:
+        - name: spark-graphite-mapping
+          mountPath: /tmp
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      {{- end }}
       - name: {{ template "spark.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         ports:
         - containerPort: {{ .Values.master.port }}
         - containerPort: {{ .Values.master.ui_port }}
+        {{- if .Values.master.prometheus.exporter.enabled }}
+        volumeMounts:
+        - name: spark-exporter
+          mountPath: /opt/spark/conf
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:

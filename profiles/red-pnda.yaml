@@ -10,3 +10,8 @@ jupyterhub:
     # Workaround  for microk8s https://github.com/jupyterhub/zero-to-jupyterhub-k8s/issues/1189#issuecomment-472601915
     cloudMetadata:
       enabled: true
+
+monitoring:
+  prometheusOperator:
+    enabled: true
+    namespace: monitoring 

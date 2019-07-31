@@ -67,3 +67,34 @@ persistence:
     storageClass:
     accessMode: ReadWriteOnce
     size: 200Gi
+
+## ------------------------------------------------------
+## Monitoring HDFS-NameNode
+## ------------------------------------------------------
+
+## Prometheus Exporter Configuration
+## ref: https://prometheus.io/docs/instrumenting/exporters/
+prometheus:
+  ## Exporter Configuration
+  ## ref: https://github.com/marcelmay/hadoop-hdfs-fsimage-exporter
+  exporter:
+    enabled: true
+    image: marcelmay/hadoop-hdfs-fsimage-exporter
+    port: 5556
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
