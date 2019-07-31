@@ -10,7 +10,6 @@ roleBindingName: pnda
 monitoring:
   prometheusOperator:
     enabled: false
-    namespace: monitoring 
 
 platform-testing:
   enabled: true
