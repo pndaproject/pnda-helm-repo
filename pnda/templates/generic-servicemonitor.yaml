@@ -5,7 +5,6 @@ metadata:
   labels:
     monitoring: prometheusOperator
   name: hdfs-kafka-spark-metrics
-  namespace: {{ .Values.monitoring.prometheusOperator.namespace }}
 spec:
   endpoints:
   - port: metrics
