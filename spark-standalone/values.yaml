@@ -56,3 +56,14 @@ master:
   ## Taints to tolerate on node assignment:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: {}
+  ## Prometheus Exporter Configuration
+  ## ref: https://prometheus.io/docs/instrumenting/exporters/
+  prometheus:
+    image: prom/graphite-exporter
+    port: 9108
+    ## Exporter Configuration
+    ## ref: https://github.com/prometheus/graphite_exporter
+    exporter:
+      enabled: true
+      image: prom/graphite-exporter
+      port: 9108
