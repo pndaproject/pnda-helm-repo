@@ -3,7 +3,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: spark-standalone-exporter
-  namespace: pnda
   labels:
     monitoring: prometheus
 spec: 

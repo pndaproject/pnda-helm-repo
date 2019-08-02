@@ -6,7 +6,6 @@ metadata:
     chart: {{ template "spark.chart" . }}
     release: {{ .Release.Name }}
   name: {{ .Release.Name }}-spark-graphite-mapping
-  namespace: pnda
 data:
   graphite_mapping.conf: |-
     defaults:

@@ -6,7 +6,6 @@ metadata:
     chart: {{ template "spark.chart" . }}
     release: {{ .Release.Name }}
   name: {{ .Release.Name }}-spark-exporter
-  namespace: pnda
 data:
   metrics.properties: |-
     *.sink.graphite.class=org.apache.spark.metrics.sink.GraphiteSink
