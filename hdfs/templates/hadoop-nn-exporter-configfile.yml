@@ -6,7 +6,6 @@ metadata:
     chart: {{ include "hdfs.chart" . }}
     release: {{ .Release.Name }}
   name: {{ .Release.Name }}-hadoop-exporter
-  namespace: pnda
 data:
   config-exporter.yml: |-
     fsImagePath : '/dfs/name/current'

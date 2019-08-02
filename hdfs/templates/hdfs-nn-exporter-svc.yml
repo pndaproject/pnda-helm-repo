@@ -3,7 +3,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: hdfs-nn-metric
-  namespace: pnda
   labels:
     monitoring: prometheus
 spec: 
