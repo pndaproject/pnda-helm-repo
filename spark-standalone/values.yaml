@@ -24,6 +24,9 @@ imagePullPolicy: IfNotPresent
 worker:
   ui_port: 8080
 
+ingress:
+  enabled: false
+
 master:
   port: 7077
   ui_port: 8080
