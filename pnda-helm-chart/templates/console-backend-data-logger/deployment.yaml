@@ -1,0 +1,32 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "pnda.console-backend-data-logger.name" . }}
+  labels:
+    {{- include "pnda.console-backend-data-logger.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.consoleBackendDataLogger.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "pnda.console-backend-data-logger.labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "pnda.console-backend-data-logger.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ include "pnda.console-backend-data-logger.name" . }}
+          image: {{ .Values.consoleBackendDataLogger.image }}
+          imagePullPolicy: {{ .Values.consoleBackendDataLogger.imagePullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.consoleBackendDataLogger.service.port }}
+              protocol: TCP
+          env:
+            - name: REDIS
+              value: redis://{{.Release.Name}}-redis-master
+          command:
+            - "node"
+            - "app.js"
+          resources:
+{{ toYaml .Values.consoleBackendDataLogger.resources | indent 12 }}

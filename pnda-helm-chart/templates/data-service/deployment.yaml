@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pnda.data-service.name" . }}
+  labels:
+    {{- include "pnda.data-service.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "pnda.data-service.labels" . | nindent 6 }}
+  serviceName: {{ include "pnda.data-service.name" . }}
+  template:
+    metadata:
+      labels:
+        {{- include "pnda.data-service.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ include "pnda.data-service.name" . }}
+          image: "{{ .Values.dataService.image }}"
+          imagePullPolicy: {{ .Values.dataService.imagePullPolicy | quote }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.dataService.service.port }}
+              protocol: TCP
+          command:
+            - "python"
+            - "apiserver.py"
+          volumeMounts:
+            - mountPath: /data-service/server.conf
+              subPath: server.conf
+              name: data-service-config
+          resources:
+{{ toYaml .Values.dataService.resources | indent 12 }}
+      volumes:
+        - name: data-service-config
+          configMap:
+            name: {{ include "pnda.data-service.name" . }}

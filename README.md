@@ -6,10 +6,10 @@
 
 ## Overview
 
-The PNDA helm charts enable you to deploy PNDA on Kubernetes, the scalable, open source big data analytics platform for networks and services.
-It includes references to official helm charts (confluent-platform, jupyterhub, grafana, etc.) and custom helm charts (hbase, hdfs, opentsdb, etc.).
+The PNDA helm chart enable you to deploy PNDA on Kubernetes, the scalable, open source big data analytics platform for networks and services.
+It deploys [PNDA components](pnda-helm-chart/templates) and [Big Data Requirements](pnda-helm-chart/charts). 
 
-The main chart is named [pnda](pnda) and defines all the pnda components as [requirements](pnda/requirements.yaml). A helm client use the main chart to deploy pnda platform on Kuberentes. The platform componentes and resources can be customized with a user provided profile.yaml (See [Configuration Section](#Configuration)).
+A helm client uses the pnda-helm-chart to deploy PNDA platform on Kuberentes. The platform components and requirements can be customized with user provided [profiles](profiles/) (See [Configuration Section](#Configuration)).
 
 ### Requirements
 
@@ -28,64 +28,39 @@ helm repo update
 
 Install to your kubernetes cluster:
 ```
-helm install --name pnda pndaproject/pnda
+helm install --name pnda pndaproject/pnda-helm-chart
 ```
 
 ## Configuration
 PNDA is configured by default for minimum resource requirements (for example HA is disabled).
+Default values for [PNDA components](pnda-helm-chart/templates) and  [Big Data requirements](pnda-helm-chart/charts) are defined in [pnda-helm-chart/values.yaml](pnda-helm-chart/values.yaml) file.
 
-The default configuration of PNDA can be modified providing a yaml file with the modifications. This yaml file is named *PNDA profile*. 
-The source repository contains a profile folder with several pnda profile examples:
+The default configuration of PNDA can be modified providing a yaml file with modified values. This yaml file is named *PNDA profile*. 
+The source repository contains a *profiles* folder with several pnda profile examples:
+- [profiles/red-pnda.yml](profiles/red-pnda.yml): profile to deploy pnda in a single computer for development purposes.
+- [profiles/pico.yml](profiles/pico.yml): profile to deploy pnda in a cluster with minimum resources.
+- *More to be added*.
 
-- [profile/red-pnda.yml](profile/red-pnda.yml): profile to deploy pnda in a single computer for development purposes.
-- [profile/pico.yml](profile/pico.yml): profile to deploy pnda in a cluster with minimum resources.
+The profile can also modify the default values defined in each [Big Data requirements](pnda-helm-chart/charts).
+Here is a list of the default value files of the [Big Data requirements](pnda-helm-chart/charts):
+- hdfs [values.yaml](pnda-helm-chart/charts/hdfs/values.yaml).
+- hbase [values.yaml](pnda-helm-chart/charts/hbase/values.yaml).
+- openstsdb [values.yaml](pnda-helm-chart/charts/opentsdb/values.yaml).
+- spark-standalone [values.yaml](pnda-helm-chart/charts/spark-standalone/values.yaml).
+- jupyterhub [values.yaml](pnda-helm-chart/charts/values.yaml).
 
-To create your own PNDA profile you can start inspecting the main pnda default configuration file [values.yaml](pnda/values.yaml).
-
-Helm will configure all PNDA services and components with values from files with this priority order:
-
-profile.yaml > pnda/values.yaml > componentX/values.yaml
-
-Here is a list of the default value files of all PNDA Components.
-
-PNDA internal management services:
-- console-backend-data-logger [values.yaml](pnda/console-backend-data-logger/values.yaml)
-- console-backend-data-manager [values.yaml](pnda/console-backend-data-manager/values.yaml)
-- console-frontend [values.yaml](pnda/console-frontend/values.yaml)
-- data-service [values.yaml](pnda/data-service/values.yaml)
-- deployment-manager [values.yaml](pnda/deployment-manager/values.yaml)
-- package-repository [values.yaml](pnda/package-repository/values.yaml)
-
-PNDA components:
-- hdfs [values.yaml](hdfs/values.yaml).
-- hbase [values.yaml](hbase/values.yaml).
-- openstsdb [values.yaml](opentsdb/values.yaml).
-- spark-standalone [values.yaml](spark-standalone/values.yaml).
-- jupyterhub [values.yaml](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/blob/0.8.2/jupyterhub/values.yaml).
-- cp-platform [values.yaml](https://github.com/confluentinc/cp-helm-charts/blob/master/values.yaml).
-- cp-zookeeper [values.yaml](https://github.com/confluentinc/cp-helm-charts/blob/master/charts/cp-zookeeper/values.yaml).
-- cp-kafka [values.yaml](https://github.com/confluentinc/cp-helm-charts/blob/master/charts/cp-kafka/values.yaml).
+- cp-zookeeper [values.yaml](pnda-helm-chart/charts/cp-zookeeper/values.yaml).
+- cp-kafka [values.yaml](pnda-helm-chart/charts/cp-kafka/values.yaml).
 
 
 ## Deploying from Sources
 
 Charts from [Helm repo](https://pndaproject.github.io/pnda-helm-repo/) are synchronized with the master branch of this [source repo](https://github.com/pndaproject/pnda-helm-repo).
-If you want to deploy charts from the development branch or modify current charts you have to deploy the charts from source.
 
-First, you have to add the external 3rd party repos to helm:
-
-```
-helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-helm repo add jupyterhub https://jupyterhub.github.io/helm-chart/
-helm repo add confluent https://confluentinc.github.io/cp-helm-charts/
-helm repo update
-```
-
-You must always update the dependencies before helm installing or helm updating the pnda chart:
+If you want to deploy charts from the development branch or modify current charts you have to deploy the charts from source:
 
 ```
-helm dep update pnda/
-helm install --name src-pnda pnda/ [-f profile/red-pnda.yaml]
+helm install --name src-pnda pnda-helm-chart/ [-f profiles/red-pnda.yaml]
 ```
 
 ## Tests
@@ -114,7 +89,7 @@ Install PNDA platform with helm:
 ```
 helm repo add pndaproject https://pndaproject.github.io/pnda-helm-repo/
 helm repo update
-helm install --name pnda pndaproject/pnda -f red-pnda.yaml
+helm install --name pnda pndaproject/pnda-helm-chart -f red-pnda.yaml
 ```
 
 Include vhosts entries pointing to minikube VM IP to access web uis.
@@ -170,7 +145,7 @@ Install PNDA platform with helm:
 ```
 helm repo add pndaproject https://pndaproject.github.io/pnda-helm-repo/
 helm repo update
-helm install --name pnda pndaproject/pnda -f red-pnda.yaml
+helm install --name pnda pndaproject/pnda-helm-chart -f red-pnda.yaml
 ```
 
 Include vhosts entries pointing to your localhost to access web uis.

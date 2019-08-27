@@ -1,0 +1,39 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "pnda.console-frontend.name" . }}
+  labels:
+    {{- include "pnda.console-frontend.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "pnda.console-frontend.labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "pnda.console-frontend.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ include "pnda.console-frontend.name" . }}
+          image: "{{ .Values.consoleFrontend.image }}"
+          imagePullPolicy: {{ .Values.consoleFrontend.imagePullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.consoleFrontend.service.port }}
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html/conf/PNDA.json
+              subPath: PNDA.json
+              name: console-frontend-config
+            - mountPath: /etc/nginx/conf.d
+              name: console-nginx-config
+          resources:
+{{ toYaml .Values.consoleFrontend.resources | indent 12 }}
+      volumes:
+        - name: console-frontend-config
+          configMap:
+            name: {{ include "pnda.console-frontend.name" . }}
+        - name: console-nginx-config
+          configMap:
+            name: {{ include "pnda.console-frontend.name" . }}-nginx

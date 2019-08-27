@@ -1,0 +1,65 @@
+dependencies:
+# confluent-platform charts copied from confluent helm repo: https://confluentinc.github.io/cp-helm-charts/
+- name: cp-kafka
+  version: 0.1.0
+  repository: "file://.charts/cp-kafka"
+  condition: cp-kafka.enabled
+- name: cp-zookeeper
+  version: 0.1.0
+  repository: file://./charts/cp-zookeeper
+  condition: cp-zookeeper.enabled
+- name: cp-schema-registry
+  version: 0.1.0
+  repository: file://./charts/cp-schema-registry
+  condition: cp-schema-registry.enabled
+- name: cp-kafka-rest
+  version: 0.1.0
+  repository: file://./charts/cp-kafka-rest
+  condition: cp-kafka-rest.enabled
+- name: cp-kafka-connect
+  version: 0.1.0
+  repository: file://./charts/cp-kafka-connect
+  condition: cp-kafka-connect.enabled
+- name: cp-ksql-server
+  version: 0.1.0
+  repository: file://./charts/cp-ksql-server
+  condition: cp-ksql-server.enabled
+# kafka-manager chart copied from stable helm repo: https://kubernetes-charts.storage.googleapis.com/
+- name: kafka-manager
+  version: 1.1.3
+  repository: file://./charts/kafka-manager
+  condition: kafka-manager.enabled
+# jupyterhub chart copied from repo: https://jupyterhub.github.io/helm-chart/
+- name: jupyterhub
+  version: 0.8.2
+  repository: file://./charts/jupyterhub
+  condition: jupyterhub.enabled
+- name: spark-standalone
+  version: 0.1.0
+  repository: file://./charts/spark-standalone
+  condition: spark-standalone.enabled
+- name: hdfs
+  version: 0.1.0
+  repository: file://./charts/hdfs
+  condition: hdfs.enabled
+- name: hbase
+  version: 0.1.0
+  repository: file://./charts/hbase
+  condition: hbase.enabled
+- name: opentsdb
+  version: 0.1.0
+  repository: file://./charts/opentsdb
+  condition: opentsdb.enabled
+# grafana chart copied from stable helm repo: https://kubernetes-charts.storage.googleapis.com/
+- name: grafana
+  version: 3.2.0
+  repository: file://./charts/grafana
+  condition: grafana.enabled
+# redis chart copied from stable helm repo: https://kubernetes-charts.storage.googleapis.com/
+- name: redis
+  version: 7.1.0
+  repository: file://./charts/redis
+  condition: rebase.enabled
+- name: jmxproxy
+  version: 3.4.0
+  repository: file://./charts/jmxproxy

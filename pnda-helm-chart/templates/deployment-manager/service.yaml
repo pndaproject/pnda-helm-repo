@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pnda.deployment-manager.name" . }}
+  labels:
+    {{- include "pnda.deployment-manager.labels" . | nindent 4 }}
+spec:
+  selector:
+    {{- include "pnda.deployment-manager.labels" . | nindent 4 }}
+  ports:
+    - port: {{ .Values.deploymentManager.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http

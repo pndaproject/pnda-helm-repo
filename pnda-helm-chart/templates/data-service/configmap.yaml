@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "pnda.data-service.name" . }}
+  labels:
+    {{- include "pnda.data-service.labels" . | nindent 4 }}
+data:
+  server.conf: |-
+    ports = [7000, 7001]
+    bind_address = "0.0.0.0"
+    sync_period = 5000
+    datasets_table = "platform_datasets"
+    data_repo = "/user/PNDA/datasets"
+    hadoop_distro = "kubernetes"
+    hdfs_namenode = "pnda-hdfs-namenode"
+    hbase_master = "pnda-hbase-master"
+    log_level = "{{ .Values.dataService.conf.logLevel }}"

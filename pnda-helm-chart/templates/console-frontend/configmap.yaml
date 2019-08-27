@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "pnda.console-frontend.name" . }}
+  labels:
+    {{- include "pnda.console-frontend.labels" . | nindent 4 }}
+data:
+  PNDA.json: |-
+    {
+      "hadoop_distro": "none",
+      "clustername": "pnda",
+      "edge_node": "{{ .Values.consoleFrontend.conf.edgeNode }}",
+      "user_interfaces": [
+        {
+          "name": "Hadoop Cluster Manager",
+          "link": "{{ .Values.consoleFrontend.conf.hdfsLink }}"
+        },
+        {
+          "name": "Kafka Manager",
+          "link": "{{ .Values.consoleFrontend.conf.kafkaManagerLink }}"
+        },
+        {
+          "name": "Grafana",
+          "link": "{{ .Values.consoleFrontend.conf.grafanaLink }}"
+        },
+        {
+          "name": "PNDA logserver",
+          "link": "{{ .Values.consoleFrontend.conf.kibanaLink }}"
+        },
+        {
+          "name": "Jupyter",
+          "link": "{{ .Values.consoleFrontend.conf.jupyterLink }}"
+        }
+      ],
+      "machine_interfaces" : {
+          "HTTPFS" :  "{{ .Values.consoleFrontend.conf.httpfsLink }}"
+      },
+      "frontend": {
+        "version": "develop"
+      },
+      "backend": {
+        "data-manager": {
+          "version": "develop",
+          "host": "{{.Release.Name}}-console-backend-data-manager", "port": "3123"
+        }
+      },
+      "login_mode": "PAM"
+    }

@@ -1,0 +1,17 @@
+#Headless service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pnda.package-repository.name" . }}
+  labels:
+    {{- include "pnda.package-repository.labels" . | nindent 4 }}
+spec:
+  ports:
+    - port: {{ .Values.packageRepository.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: packagerepository
+  clusterIP: None
+  selector:
+    {{- include "pnda.package-repository.labels" . | nindent 4 }}
+

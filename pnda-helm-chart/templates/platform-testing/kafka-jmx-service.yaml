@@ -1,0 +1,15 @@
+{{- if .Values.platformTesting.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pnda.platform-testing.name" . }}-kafka-jmx
+  labels:
+    {{- include "pnda.platform-testing.labels" . | nindent 4 }}
+spec:
+  ports:
+    - port: 5555
+      name: jmx
+  selector:
+    app: "cp-kafka"
+    release: {{ .Release.Name }}
+{{- end -}}

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pnda.deployment-manager.name" . }}
+  labels:
+    {{- include "pnda.deployment-manager.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "pnda.deployment-manager.labels" . | nindent 6 }}
+  servicename: {{ include "pnda.deployment-manager.name" . }}
+  template:
+    metadata:
+      labels:
+        {{- include "pnda.deployment-manager.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ include "pnda.deployment-manager.name" . }}
+          image: "{{ .Values.deploymentManager.image }}"
+          imagePullPolicy: {{ .Values.deploymentManager.imagePullPolicy | quote }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.deploymentManager.service.port }}
+              protocol: TCP
+          command:
+            - "python3"
+            - "app.py"
+          volumeMounts:
+            - mountPath: /deployment-manager/dm-config.json
+              subPath: dm-config.json
+              name: deployment-manager-config
+          resources:
+{{ toYaml .Values.deploymentManager.resources | indent 12 }}
+      volumes:
+        - name: deployment-manager-config
+          configMap:
+            name: {{ include "pnda.deployment-manager.name" . }}

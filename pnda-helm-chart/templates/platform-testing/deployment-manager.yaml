@@ -1,0 +1,45 @@
+{{- if .Values.platformTesting.enabled -}}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "pnda.platform-testing.name" . }}-deployment-manager
+  labels:
+    {{- include "pnda.platform-testing.labels" . | nindent 4 }}
+spec:
+  schedule: "{{ .Values.platformTesting.schedule }}"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            {{- include "pnda.platform-testing.labels" . | nindent 12 }}
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: {{ include "pnda.platform-testing.name" . }}-deployment-manager
+              image: "{{ .Values.platformTesting.image }}"
+              imagePullPolicy: {{ .Values.platformTesting.imagePullPolicy }}
+              command:
+                - "python"
+                - "monitor.py"
+                - "--plugin"
+                - "dm_blackbox"
+                - "--display"
+                - "--postjson"
+                - "http://{{.Release.Name}}-console-backend-data-logger:3001/metrics"
+                - "--extra"
+                - "--dmendpoint http://{{.Release.Name}}-deployment-manager:5000"
+              volumeMounts:
+                - mountPath: /platform-testing/logging.conf
+                  subPath: logging.conf
+                  name: logging-config
+              resources:
+{{ toYaml .Values.platformTesting.resources | indent 16 }}                  
+          volumes:
+            - name: logging-config
+              configMap:
+                name: {{ include "pnda.platform-testing.name" . }}
+{{- end -}}

@@ -1,0 +1,17 @@
+{{- if  .Values.monitoring.prometheusOperator.enabled -}}
+{{- if index .Values "cp-kafka" "prometheus" "jmx" "enabled" -}}
+kind: Service
+apiVersion: v1
+metadata:
+  name: kafka-metric
+  labels:
+    monitoring: prometheus
+spec: 
+  selector: 
+    app: cp-kafka
+  ports:
+  - port: {{ index .Values "cp-kafka" "prometheus" "jmx" "port" }}
+    name: metrics
+    targetPort: {{ index .Values "cp-kafka" "prometheus" "jmx" "port" }}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,36 @@
+## ----------------------------
+## PNDA Components Configuration
+## ----------------------------
+
+
+## ----------------------------------
+## Big Data Requirements Configuration
+## ----------------------------------
+
+# Disable all Big Data Requirements
+grafana:
+  enabled: false
+kafka-manager:
+  enabled: false
+jupyterhub:
+  enabled: false
+cp-zookeeper:
+  enabled: true
+cp-kafka:
+  enabled: false
+cp-schema-registry:
+  enabled: false
+cp-kafka-rest:
+  enabled: false
+cp-kafka-connect:
+  enabled: false
+cp-ksql-server:
+  enabled: false
+hdfs:
+  enabled: true
+hbase:
+  enabled: true
+opentsdb:
+  enabled: false
+spark-standalone:
+  enabled: false

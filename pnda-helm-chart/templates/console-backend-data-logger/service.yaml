@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pnda.console-backend-data-logger.name" . }}
+  labels:
+    {{- include "pnda.console-backend-data-logger.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.consoleBackendDataLogger.service.type }}
+  ports:
+    - port: {{ .Values.consoleBackendDataLogger.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "pnda.console-backend-data-logger.labels" . | nindent 4 }}

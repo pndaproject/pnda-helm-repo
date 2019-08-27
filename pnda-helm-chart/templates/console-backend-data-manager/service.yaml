@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pnda.console-backend-data-manager.name" . }}
+  labels:
+    {{- include "pnda.console-backend-data-manager.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.consoleBackendDataManager.service.type }}
+  ports:
+    - port: {{ .Values.consoleBackendDataManager.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "pnda.console-backend-data-manager.labels" . | nindent 4 }}

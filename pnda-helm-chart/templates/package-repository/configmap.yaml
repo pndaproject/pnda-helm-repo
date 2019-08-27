@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "pnda.package-repository.name" . }}
+  labels:
+    {{- include "pnda.package-repository.labels" . | nindent 4 }}
+data:
+  pr-config.json: |
+    {
+    "FsRepository": {
+        "location": {
+            "path": "/packages"
+        }
+    },
+    "config": {
+        "log_level":"{{ .Values.packageRepository.conf.logLevel }}",
+        "package_callback": "http://{{.Release.Name}}-console-backend-data-logger:3001/packages"
+    }
+    }
+

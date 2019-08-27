@@ -1,0 +1,21 @@
+{{- if .Values.packageRepository.persistence.enabled -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "pnda.package-repository.name" . }}
+  labels:
+    {{- include "pnda.package-repository.labels" . | nindent 4 }}
+spec:
+  accessModes:
+  - {{ .Values.packageRepository.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.packageRepository.persistence.size | quote }}
+{{- if .Values.packageRepository.persistence.storageClass }}
+{{- if (eq "-" .Values.packageRepository.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.packageRepository.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}

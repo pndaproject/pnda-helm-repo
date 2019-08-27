@@ -1,0 +1,40 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "pnda.console-backend-data-manager.name" . }}
+  labels:
+    {{- include "pnda.console-backend-data-manager.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "pnda.console-backend-data-manager.labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "pnda.console-backend-data-manager.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ include "pnda.console-backend-data-manager.name" . }}
+          image: "{{ .Values.consoleBackendDataManager.image }}"
+          imagePullPolicy: {{ .Values.consoleBackendDataManager.imagePullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.consoleBackendDataManager.service.port }}
+              protocol: TCP
+          env:
+            - name: REDIS
+              value: redis://{{.Release.Name}}-redis-master
+          command:
+            - "node"
+            - "app.js"
+          volumeMounts:
+            - mountPath: /console-backend-data-manager/conf/config.js
+              subPath: config.js
+              name: data-manager-config
+          resources:
+{{ toYaml .Values.consoleBackendDataManager.resources | indent 12 }}
+      volumes:
+        - name: data-manager-config
+          configMap:
+            name: {{ include "pnda.console-backend-data-manager.name" . }}

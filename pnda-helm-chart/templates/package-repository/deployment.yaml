@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pnda.package-repository.name" . }}
+  labels:
+    {{- include "pnda.package-repository.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "pnda.package-repository.labels" . | nindent 6 }}
+  servicename: {{ include "pnda.package-repository.name" . }}
+  template:
+    metadata:
+      labels:
+        {{- include "pnda.package-repository.labels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ include "pnda.package-repository.name" . }}
+        image: "{{ .Values.packageRepository.image }}"
+        imagePullPolicy: {{ .Values.packageRepository.imagePullPolicy | quote }}
+        ports:
+          - name: http
+            containerPort: {{ .Values.packageRepository.service.port }}
+            protocol: TCP
+        command:
+          - "python3"
+          - "package_repository_rest_server.py"
+        resources:
+{{ toYaml .Values.packageRepository.resources | indent 10 }}
+        volumeMounts:
+        - name: packagerepo-config
+          mountPath: /package-repository/pr-config.json
+          subPath: pr-config.json
+        - name: packagerepo-data
+          mountPath: /packages
+      volumes:
+      - name: packagerepo-config
+        configMap:
+          name: {{ include "pnda.package-repository.name" . }}
+      - name: packagerepo-data
+      {{- if .Values.packageRepository.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ include "pnda.package-repository.name" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
