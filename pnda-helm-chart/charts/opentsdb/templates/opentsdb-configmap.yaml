@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "opentsdb.fullname" . }}-config
+  labels:
+    app: {{ include "opentsdb.name" . }}
+    chart: {{ include "opentsdb.chart" . }}
+    release: {{ .Release.Name }}
+data:
+  opentsdb.conf: |-
+{{ tpl (.Files.Get "resources/config/opentsdb.conf") . | indent 4 }}

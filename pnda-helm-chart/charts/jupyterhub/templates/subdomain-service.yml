@@ -1,0 +1,19 @@
+# to resolve singleuser pods (jupyter-{username}.jupyterhub) through kubernetes DNS
+# https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-hostname-and-subdomain-fields
+apiVersion: v1
+kind: Service
+metadata:
+  name: jupyterhub
+  labels:
+    app: jupyterhub
+    component: subdomain-service
+    release: {{ .Release.Name }}
+spec:
+  selector:
+    app: jupyterhub
+    component: singleuser-server
+  clusterIP: None
+  ports:
+  - name: foo # Actually, no port is needed.
+    port: 1234
+    targetPort: 1234

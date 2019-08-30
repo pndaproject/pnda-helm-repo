@@ -1,0 +1,14 @@
+#Headless service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "spark.fullname" . }}-workers
+  labels:
+    app: {{ template "spark.name" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  clusterIP: None
+  selector:
+    app: {{ template "spark.name" . }}-worker
+    release: {{ .Release.Name }}

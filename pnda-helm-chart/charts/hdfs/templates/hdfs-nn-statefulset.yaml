@@ -1,0 +1,109 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ include "hdfs.fullname" . }}-namenode
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/hadoop-configmap.yaml") . | sha256sum }}
+  {{- if .Values.prometheus.exporter.enabled }}
+    prometheus.io/scrape: "true"
+    prometheus.io/port: {{ .Values.prometheus.exporter.port | quote }}
+  {{- end }}
+  labels:
+    app: {{ include "hdfs.name" . }}
+    chart: {{ include "hdfs.chart" . }}
+    release: {{ .Release.Name }}
+    component: namenode
+spec:
+  serviceName: {{ include "hdfs.fullname" . }}-namenode
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ include "hdfs.name" . }}
+        release: {{ .Release.Name }}
+        component: namenode
+    spec:
+      affinity:
+        podAntiAffinity:
+        {{- if eq .Values.antiAffinity "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app:  {{ include "hdfs.name" . }}
+                release: {{ .Release.Name | quote }}
+                component: namenode
+        {{- else if eq .Values.antiAffinity "soft" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 5
+            podAffinityTerm:
+              topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app:  {{ include "hdfs.name" . }}
+                  release: {{ .Release.Name | quote }}
+                  component: namenode
+        {{- end }}
+      terminationGracePeriodSeconds: 0
+      containers:
+      {{- if .Values.prometheus.exporter.enabled }}
+      - name: namenode-exporter
+        image: "{{ .Values.prometheus.exporter.image }}"
+        command:
+        - /bin/sh
+        - -c
+        - java $JAVA_OPTS -jar /opt/fsimage-exporter/fsimage-exporter.jar 0.0.0.0 {{ .Values.prometheus.exporter.port | quote }} /exporter/config-exporter.yml
+        ports:
+        - containerPort: {{ .Values.prometheus.exporter.port }}
+        resources:
+          {{ toYaml .Values.prometheus.exporter.resources | indent 10 }}
+        volumeMounts:
+        - name: hadoop-config
+          mountPath: /tmp/hadoop-config
+        - name: config-exporter
+          mountPath: /exporter
+        - name: dfs
+          mountPath: /dfs
+      {{- end }}
+      - name: namenode
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        command:
+        - "/bin/bash"
+        - "/tmp/hadoop-config/bootstrap.sh"
+        - "-d"
+        resources:
+{{ toYaml .Values.nameNode.resources | indent 10 }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 50070
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 50070
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+        volumeMounts:
+        - name: hadoop-config
+          mountPath: /tmp/hadoop-config
+        - name: dfs
+          mountPath: /dfs
+      volumes:
+      - name: hadoop-config
+        configMap:
+          name: {{ .Release.Name }}-hadoop
+      {{- if .Values.prometheus.exporter.enabled }}
+      - name: config-exporter
+        configMap:
+          name: {{ .Release.Name }}-hadoop-exporter
+      {{- end }}
+      - name: dfs
+      {{- if .Values.persistence.nameNode.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ include "hdfs.fullname" . }}-namenode
+      {{- else }}
+        emptyDir: {}
+      {{- end }}

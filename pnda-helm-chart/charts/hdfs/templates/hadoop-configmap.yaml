@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-hadoop
+  labels:
+    app: {{ include "hdfs.name" . }}
+    chart: {{ include "hdfs.chart" . }}
+    release: {{ .Release.Name }}
+data:
+  bootstrap.sh: |-
+{{ tpl (.Files.Get "resources/config/bootstrap.sh") . | indent 4 }}
+  core-site.xml: |-
+{{ tpl (.Files.Get "resources/config/core-site.xml") . | indent 4 }}
+  hdfs-site.xml: |-
+{{ tpl (.Files.Get "resources/config/hdfs-site.xml") . | indent 4 }}
+  mapred-site.xml: |-
+{{ tpl (.Files.Get "resources/config/mapred-site.xml") . | indent 4 }}
+  yarn-site.xml: |-
+{{ tpl (.Files.Get "resources/config/yarn-site.xml") . | indent 4 }}
+  slaves: |
+    localhost

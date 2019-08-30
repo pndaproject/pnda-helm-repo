@@ -1,0 +1,13 @@
+{{- if .Values.prometheus.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "hbase.fullname" . }}-exporter-configmap
+  labels:
+    app: {{ template "hbase.name" . }}
+    chart: {{ template "hbase.chart" . }}
+    release: {{ .Release.Name }}
+data:
+  jmx-hbase-prometheus.yml: |+
+{{ toYaml .Values.prometheus.config | indent 4 }}
+{{- end }}

@@ -20,6 +20,10 @@ Next charts are directly downloaded from their public repo:
 
 ## Copied from public repo with minor modifications
 
+### cp-kafka 
+[confluent repo](https://confluentinc.github.io/cp-helm-charts/).
+Changed prometheus_jmx_exporter from a sidecar http server to a injected javaagent. [ref](https://github.com/chuyeow/prometheus-jmx-exporter-kubernetes) 
+
 ### jupyterhub
 
 Downloaded from  [jupyterhub repo](https://jupyterhub.github.io/helm-chart/). with the following **modifications**:

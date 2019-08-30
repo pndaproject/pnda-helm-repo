@@ -1,0 +1,17 @@
+{{- if .Values.prometheus.enabled -}}
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name}}-hbase-master-thrift-metrics
+  labels:
+    monitoring: prometheus
+spec: 
+  selector: 
+    app: {{ include "hbase.name" . }}
+    release: {{ .Release.Name }}
+    component: master
+  ports:
+  - port: {{ .Values.prometheus.thriftPort }}
+    name: metrics
+    targetPort: {{ .Values.prometheus.thriftPort }}
+{{- end -}}
