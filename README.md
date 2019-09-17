@@ -6,8 +6,7 @@ To add this repo to helm and install a packaged chart, follow this instructions:
 
 Add this repo to your helm:
 ```
-helm repo add pndaproject https://pndaproject.github.io/pnda-helm-repo/
-helm repo update
+helm install --name pnda pndaproject/pnda
 ```
 
 Install to your kubernetes cluster:
