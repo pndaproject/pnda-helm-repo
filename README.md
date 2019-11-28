@@ -1,3 +1,8 @@
+<aside class="warning">
+This repo is deprecated in favor of https://github.com/pndaproject/pnda-helm-chart.
+To use pnda helm repo, please follow instructions at https://pndaproject.github.io/pnda-helm-chart
+</aside>
+
 # cloud-pnda helm repository
 
 This helm repository provides cloud-pnda charts released from [https://github.com/pndaproject/pnda-helm-chart](https://github.com/pndaproject/pnda-helm-chart)
